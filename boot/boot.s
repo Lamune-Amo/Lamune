@@ -12,7 +12,7 @@ reset:
 	mov sp, $17176
 	mov fp, sp
 	; jump
-	mov r0, main
+	mov r0, kernel_init 
 	jmp r0
 
 interrupt:

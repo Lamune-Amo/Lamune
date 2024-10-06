@@ -1,4 +1,5 @@
 AS			= /home/yahong/Binutils/install/bin/amo-linux-as
+OBJCOPY		= /home/yahong/Binutils/install/bin/amo-linux-objcopy
 
 CC			= /home/yahong/GCC/install/bin/amo-linux-gcc
 CFLAGS		= -fno-builtin -fno-exceptions -fno-stack-protector \
@@ -15,32 +16,42 @@ LIB			= lib/string.c
 SRCS		= $(BOOT) $(INIT) $(LIB)
 INCS		= -Iinclude
 
-ASMS		= $(patsubst %.c,%.s,$(SRCS))
-
-OBJS		= $(patsubst %.s,%.o,$(ASMS))
+OBJS		= $(patsubst %.s,%.o,$(SRCS)) $(patsubst %.c,%.o,$(SRCS))
+OBJS		:= $(filter %.o,$(OBJS))
 
 LINKER_CONF	= boot/setup.ld
 
 BIN			= lamune
+COE			= lamune.coe
 
-all: $(ASMS) $(OBJS) $(BIN)
-	@echo $(OBJS)
+all: $(OBJS) $(BIN) $(COE)
 
 %.o: %.s
 	@$(AS) $< -o $@
 	@echo "AS\t" $@
 
-%.s: %.c
-	@$(CC) $(CFLAGS) $(INCS) -S $< -o $@
-	@echo "CC\t" $@
+%.o: %.c
+	@$(CC) $(CFLAGS) $(INCS) -S $< -o $(subst .o,.s,$@)
+	@echo "CC\t" $(subst .o,.s,$@)
+	@$(AS) $(subst .o,.s,$@) -o $@
+	@echo "AS\t" $@
+	@$(RM) $(subst .o,.s,$@)
 
 $(BIN):
 	@$(LD) -T $(LINKER_CONF) $(OBJS) -o $(BIN)
 	@echo "LD\t" $(OBJS)
 
+$(COE):
+	@$(OBJCOPY) -O binary $(BIN) _temp_coe
+	@xxd -g4 _temp_coe | cut --characters=11-46 > $(COE)
+	@$(RM) _temp_coe
+	@echo "COE\t" $(COE)
+
 clean:
-	$(RM) $(OBJS)
+	@$(RM) $(OBJS)
+	@echo "CLEAN\t" $(OBJS)
 
 fclean: clean
-	$(RM) $(BIN)
+	@$(RM) $(BIN) $(COE)
+	@echo "CLEAN\t" $(BIN) $(COE)
 
