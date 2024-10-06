@@ -15,6 +15,10 @@ reset:
 	mov r0, kernel_init 
 	jmp r0
 
+	; halt
+.hlt:
+	jmp .hlt
+
 interrupt:
 	mov r0, $42 ; temporary
 	jmp r0
