@@ -21,7 +21,7 @@
 
 #define FORMAT(FORE, BACK, C) (((FORE & 0xF) << 12 | (BACK & 0xF) << 8) | (C & 0xFF))
 
-unsigned short *video = VIDEO_RAM_ADDRESS;
+unsigned short *video = (unsigned short *) VIDEO_RAM_ADDRESS;
 
 void sleep (void)
 {
