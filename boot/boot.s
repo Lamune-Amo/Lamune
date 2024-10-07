@@ -13,7 +13,7 @@ reset:
 	mov fp, sp
 	; jump
 	mov r0, kernel_init 
-	jmp r0
+	jal r0
 
 	; halt
 .hlt:
