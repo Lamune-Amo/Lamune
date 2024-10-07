@@ -43,7 +43,7 @@ $(BIN):
 
 $(COE):
 	@$(OBJCOPY) -O binary $(BIN) _temp_coe
-	@xxd -g4 _temp_coe | cut --characters=11-46 > $(COE)
+	@xxd -g4 _temp_coe | cut --characters=11-45 > $(COE)
 	@$(RM) _temp_coe
 	@echo "COE\t" $(COE)
 
