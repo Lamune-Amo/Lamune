@@ -6,10 +6,9 @@ SECTIONS
 {
 	. = 0x0;
 
-	.inittext			: { *(.inittext) }
-
 	.text :
 	{
+		*(.inittext)
 		*(.text)
 	}
 	

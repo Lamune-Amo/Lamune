@@ -39,7 +39,7 @@ all: $(OBJS) $(BIN) $(COE)
 
 $(BIN):
 	@$(LD) -T $(LINKER_CONF) $(OBJS) -o $(BIN)
-	@echo "LD\t" $(OBJS)
+	@echo "LD\t" $(BIN)
 
 $(COE):
 	@$(OBJCOPY) -O binary $(BIN) _temp_coe

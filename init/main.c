@@ -21,8 +21,6 @@
 
 #define FORMAT(FORE, BACK, C) (((FORE & 0xF) << 12 | (BACK & 0xF) << 8) | (C & 0xFF))
 
-unsigned short *video = (unsigned short *) VIDEO_RAM_ADDRESS;
-
 void sleep (void)
 {
 	volatile int i;
@@ -30,19 +28,23 @@ void sleep (void)
 	for (i = 0; i < 499999; i++);
 }
 
-void print (char *str)
+void print (unsigned short **video, char *str)
 {
 	int i;
 
 	for (i = 0; i < strlen (str); i++)
 	{
-		*(video++) = FORMAT (WHITE, LIGHT_CYAN, str[i]);
+		*((*video)++) = FORMAT (WHITE, LIGHT_CYAN, str[i]);
 	}
 }
 
 void kernel_init (void)
 {
-	print ("test message. Hello WORLD!!!");
+	unsigned short *video;
+
+	video = (unsigned short *) VIDEO_RAM_ADDRESS;
+
+	print (&video, "test message. Hello WORLD!!!");
 	while (1)
 	{
 		*video = FORMAT (BLACK, WHITE, ' ');
