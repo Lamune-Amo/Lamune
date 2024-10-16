@@ -21,6 +21,26 @@
 
 #define FORMAT(FORE, BACK, C) (((FORE & 0xF) << 12 | (BACK & 0xF) << 8) | (C & 0xFF))
 
+void sleep (void)
+{
+	volatile int i;
+
+	for (i = 0; i < 1005000; i++);
+}
+
+void print (unsigned short **video, char *str)
+{
+	int i;
+
+	for (i = 0; i < strlen (str); i++)
+	{
+		*((*video)++) = FORMAT (YELLOW, LIGHT_MAGENTA, str[i]);
+	}
+}
+
+void kernel_init (void)
+{	
+
 const char keymap[] = {
 	  0, 0,  0,  0,  0,  0,  0,  0,
 	  0, 0,  0,  0,  0,  0, '`', 0,
@@ -41,25 +61,6 @@ const char keymap[] = {
 	  0, 0, 0, 0
 };
 
-void sleep (void)
-{
-	volatile int i;
-
-	for (i = 0; i < 1005000; i++);
-}
-
-void print (unsigned short **video, char *str)
-{
-	int i;
-
-	for (i = 0; i < strlen (str); i++)
-	{
-		*((*video)++) = FORMAT (YELLOW, LIGHT_MAGENTA, str[i]);
-	}
-}
-
-void kernel_init (void)
-{	
 	unsigned short *video;
 	int *keyboard;
 	int temp;
