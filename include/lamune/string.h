@@ -12,5 +12,6 @@ char *strchr (const char *str, int c);
 int atoi (const char *str);
 
 void *memset (void *ptr, int value, size_t num);
+void *memcpy (void *dest, const void *src, size_t len);
 
 #endif

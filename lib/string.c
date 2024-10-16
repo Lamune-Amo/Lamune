@@ -148,3 +148,16 @@ void *memset (void *ptr, int value, size_t num)
 
 	return ptr;
 }
+
+void *memcpy (void *dest, const void *src, size_t len)
+{
+  const char *s;
+  char *d;
+
+  s = src;
+  d = dest;
+  while (len--)
+    *d++ = *s++;
+
+  return dest;
+}

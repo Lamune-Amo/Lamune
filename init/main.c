@@ -21,11 +21,31 @@
 
 #define FORMAT(FORE, BACK, C) (((FORE & 0xF) << 12 | (BACK & 0xF) << 8) | (C & 0xFF))
 
+const char keymap[] = {
+	  0, 0,  0,  0,  0,  0,  0,  0,
+	  0, 0,  0,  0,  0,  0, '`', 0,
+	  0, 0 , 0 , 0,  0, 'q','1', 0,
+	  0, 0, 'z','s','a','w','2', 0,
+	  0,'c','x','d','e','4','3', 0,
+	  0,' ','v','f','t','r','5', 0,
+	  0,'n','b','h','g','y','6', 0,
+	  0, 0, 'm','j','u','7','8', 0,
+	  0,',','k','i','o','0','9', 0,
+	  0,'.','/','l',';','p','-', 0,
+	  0, 0,'\'', 0,'[', '=', 0, 0,
+	  0, 0,13, ']', 0, '\\', 0, 0,
+	  0, 0, 0, 0, 0, 0, 127, 0,
+	  0,'1', 0,'4','7', 0, 0, 0,
+	  '0','.','2','5','6','8', 0, 0,
+	  0,'+','3','-','*','9', 0, 0,
+	  0, 0, 0, 0
+};
+
 void sleep (void)
 {
 	volatile int i;
 
-	for (i = 0; i < 499999; i++);
+	for (i = 0; i < 1005000; i++);
 }
 
 void print (unsigned short **video, char *str)
@@ -34,22 +54,28 @@ void print (unsigned short **video, char *str)
 
 	for (i = 0; i < strlen (str); i++)
 	{
-		*((*video)++) = FORMAT (WHITE, LIGHT_CYAN, str[i]);
+		*((*video)++) = FORMAT (YELLOW, LIGHT_MAGENTA, str[i]);
 	}
 }
 
 void kernel_init (void)
-{
+{	
 	unsigned short *video;
-
+	int *keyboard;
+	int temp;
+	
 	video = (unsigned short *) VIDEO_RAM_ADDRESS;
+	keyboard = (int *) 8896;
 
-	print (&video, "test message. Hello WORLD!!!");
+	print (&video, "Input> ");
+
 	while (1)
 	{
-		*video = FORMAT (BLACK, WHITE, ' ');
-		sleep();
-		*video = FORMAT (BLACK, BLACK, ' ');
-		sleep();
+		temp = *keyboard;
+		if (temp == -1)
+			continue;
+
+		if (keymap[temp] != 0)
+			*(video++) = FORMAT (YELLOW, LIGHT_MAGENTA, keymap[temp]);
 	}
 }
