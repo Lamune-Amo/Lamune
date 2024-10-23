@@ -25,7 +25,6 @@ void interrupt (int signal)
 {
 }
 
-__attribute__((interrupt))
 void irq (int signal)
 {
 	int *keyboard;
