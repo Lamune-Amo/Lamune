@@ -9,11 +9,12 @@ LD			= /home/yahong/Binutils/install/bin/amo-linux-ld
 
 RM			= rm -rf
 
+ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c
 BOOT		= boot/boot.s
 INIT		= init/main.c
-LIB			= lib/string.c
+LIB			= lib/string.c lib/unistd.c
 
-SRCS		= $(BOOT) $(INIT) $(LIB)
+SRCS		= $(ARCH) $(BOOT) $(INIT) $(LIB)
 INCS		= -Iinclude
 
 OBJS		= $(patsubst %.s,%.o,$(SRCS)) $(patsubst %.c,%.o,$(SRCS))
