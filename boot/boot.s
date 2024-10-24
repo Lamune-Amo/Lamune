@@ -4,7 +4,7 @@
 ; entry for kernel
 start:
 	; stack
-	mov sp, $17400
+	mov sp, $71920
 	mov fp, sp
 
 	sub sp, sp, $0x4

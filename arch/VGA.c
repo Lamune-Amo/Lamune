@@ -104,6 +104,7 @@ size_t vga_write (const char *buf, size_t size)
 				break;
 		}
 	}
+
 	return size;
 }
 
