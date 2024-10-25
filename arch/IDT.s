@@ -1,50 +1,66 @@
 	.text
 	.align	4
 	.global IDT
-	.extern irq
+	.extern interrupt_stack
+	.extern interrupt_irq
 IDT:
 	; vector table
 	; 0x0
-	jmp _idt_reset
+	jmp idt_reset
 	; 0x4
-	jmp _idt_undefined
+	jmp idt_undefined
 	; 0x8
-	jmp _idt_interrupt
+	jmp idt_trap
 	; 0xC
-	jmp _idt_irq
+	jmp idt_irq
 
 ; far away jump
-_idt_reset:
+idt_reset:
 	mov r0, $0x0
-	jmp r0
+	ret r0
 
-_idt_undefined:
+idt_undefined:
 	mov r0, $0x4
 
-_idt_interrupt:
-	jmp lr
+idt_trap:
+	ret lr
 
-_idt_irq:
+idt_irq:
+	; save stack frame
+	; r27 (interrupt only)
+	mov r27, interrupt_stack
+	str [r27], fp
+	str [r27, $4], sp
+	str [r27, $8], lr
+
 	; switch to kerenl stack
+	add sp, r27, $72 ; 12 + 64 - 4(margin)
+	
+	; save regs
 	sub sp, sp, $4
 	str [sp], r0
-	mov r0, sp
-	; kerenl sp should be moved here
-	; mov sp, sp
-	
-	; save r0 and lr to kernel stack
-	sub sp, sp, $8
-	str [sp, $4], r0
-	str [sp], lr
 
-	; interrupt controller
-	mov r2, $8896
-	ldr r2, [r2]
-	jal irq
-	
-	ldr lr, [sp]
-	ldr r0, [sp, $4]
-	add sp, sp, $8
+	mov fp, sp
 
-	jmp lr
+	; get irq device number from interrupt controller
+	mov r27, $8896
+	ldr r27, [r27]
+
+	lsl r27, r27, $2
+	mov r0, interrupt_irq
+	add r0, r0, r27
+	ldr r0, [r0]
+
+	jal r0
+	
+	ldr r0, [sp]
+	add sp, sp, $4
+
+	; restore stack frame
+	mov r27, interrupt_stack
+	ldr lr, [r27, $8]
+	ldr sp, [r27, $4]
+	ldr fp, [r27]
+
+	ret lr
 

@@ -9,7 +9,7 @@ LD			= /home/yahong/Binutils/install/bin/amo-linux-ld
 
 RM			= rm -rf
 
-ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c
+ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c arch/keyboard.c arch/atomic.c
 BOOT		= boot/boot.s
 INIT		= init/main.c
 LIB			= lib/string.c lib/unistd.c
