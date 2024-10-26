@@ -5,39 +5,74 @@
 
 #define KEYBOARD_ADDRESS 8900
 
+const char keymap[] = {
+	[0x11] = 'A',
+};
+
 keyboard_control_t keyboard_control;
 
 static int *keyboard;
 static char *buffer;
 static size_t index;
 
-
-const char keymap[] = {
-	  0, 0,  0,  0,  0,  0,  0,  0,
-	  0, 0,  '\n',  0,  0,  0, '`', 0,
-	  0, 0 , 0 , 0,  0, 'q','1', 0,
-	  0, 0, 'z','s','a','w','2', 0,
-	  0,'c','x','d','e','4','3', 0,
-	  0,' ','v','f','t','r','5', 0,
-	  0,'n','b','h','g','y','6', 0,
-	  0, 0, 'm','j','u','7','8', 0,
-	  0,',','k','i','o','0','9', 0,
-	  0,'.','/','l',';','p','-', 0,
-	  0, 0,'\'', 0,'[', '=', 0, 0,
-	  0, 0,13, ']', 0, '\\', 0, 0,
-	  0, 0, 0, 0, 0, 0, 127, 0,
-	  0,'1', 0,'4','7', 0, 0, 0,
-	  '0','.','2','5','6','8', 0, 0,
-	  0,'+','3','-','*','9', 0, 0,
-	  0, 0, 0, 0
-};
+static char keycodes[8];
 
 __attribute__((interrupt))
 void keyboard_irq (void)
 {
-	static unsigned short *video = (unsigned short *) 4096;
+	int keycode;
 
-	*(video++) = ((WHITE & 0xF) << 12) | ((BLACK & 0xF) << 8) | keymap[*keyboard];
+	keycode = *keyboard;
+	keyboard_control.ps2.codes[keyboard_control.ps2.index++] = keycode;
+	
+	/* key state */
+	if (keyboard_control.ps2.index == 1)
+	{
+		if (keyboard_control.ps2.codes[0] != PS2_KEY_EXTENSION &&
+			keyboard_control.ps2.codes[0] != 0xE1 &&
+			keyboard_control.ps2.codes[0] != PS2_KEY_RELEASE)
+		{
+			/* press: 0 */
+			keymap[keyboard_control.ps2.codes[0]];
+			goto found;
+		}
+	}
+	else if (keyboard_control.ps2.index == 2)
+	{
+		if (keyboard_control.ps2.codes[0] == PS2_KEY_EXTENSION &&
+			keyboard_control.ps2.codes[1] != PS2_KEY_RELEASE)
+		{
+			/* press (extension): 1 */
+		}
+		else if (keyboard_control.ps2.codes[0] == PS2_KEY_RELEASE)
+		{
+			/* release: 1 */
+		}
+	}
+	else if (keyboard_control.ps2.index == 3)
+	{
+		if (keyboard_control.ps2.codes[0] == PS2_KEY_EXTENSION &&
+			keyboard_control.ps2.codes[1] == PS2_KEY_RELEASE)
+		{
+			/* release (extension): 2 */
+		}
+	}
+	else if (keyboard_control.ps2.index == 8)
+	{
+		if (keyboard_control.ps2.codes[0] == 0xE1)
+		{
+			/* ignore */
+			keyboard_control.ps2.index = 0;
+		}
+	}
+
+	return ;
+
+found:
+	//press/release
+	//0, 1, 2, 3, 4
+	return ;
+	
 	/*
 	if (buffer)
 		buffer[index++] = *keyboard;
@@ -49,6 +84,7 @@ size_t keyboard_open (void)
 	keyboard = (int *) KEYBOARD_ADDRESS;
 	buffer = NULL;
 	index = 0;
+	keyboard_control.ps2.index = 0;
 
 	return 1;
 }

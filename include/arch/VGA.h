@@ -25,4 +25,7 @@ size_t vga_read (char *buf, size_t size);
 size_t vga_write (const char *buf, size_t size);
 size_t vga_close (void);
 
+/* extension */
+void vga_clear (void);
+
 #endif

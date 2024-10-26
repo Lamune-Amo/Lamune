@@ -1,10 +1,18 @@
 #ifndef _ARCH_KEYBOARD_
 #define _ARCH_KEYBOARD_
 
+#define PS2_KEY_EXTENSION	0xE0
+#define PS2_KEY_RELEASE		0xF0
+
 typedef struct _keyboard_contorl keyboard_control_t;
 struct _keyboard_contorl
 {
-	unsigned char keys[128];
+	struct
+	{
+		unsigned char codes[8];
+		unsigned char index;
+	} ps2;
+
 	unsigned char shift;
 	unsigned char capslock;
 };

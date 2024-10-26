@@ -12,9 +12,11 @@ RM			= rm -rf
 ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c arch/keyboard.c arch/atomic.c
 BOOT		= boot/boot.s
 INIT		= init/main.c
+KERNEL		= kernel/assert.c kernel/printk.c
+LIBSOFT		= udivmodsi4.c udivmod.c divmod.c
 LIB			= lib/string.c lib/unistd.c
 
-SRCS		= $(ARCH) $(BOOT) $(INIT) $(LIB)
+SRCS		= $(ARCH) $(BOOT) $(INIT) $(KERNEL) $(LIB) $(addprefix lib/soft/, $(LIBSOFT))
 INCS		= -Iinclude
 
 OBJS		= $(patsubst %.s,%.o,$(SRCS)) $(patsubst %.c,%.o,$(SRCS))
