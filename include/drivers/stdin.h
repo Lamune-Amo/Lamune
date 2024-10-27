@@ -1,14 +1,11 @@
 #ifndef _DRIVERS_STDIN_
 #define _DRIVERS_STDIN_
 
-# define KEYBOARD_FLAG_SHIFT 0x1
-# define PLAIN_FLAG_CAPSLOCK 0x2
+#include "lamune/types.h"
 
-struct plain_field
-{
-	uint32_t flag:8;
-	uint32_t upper:8;
-	uint32_t lower:8;
-};
+ssize_t stdin_open (void);
+ssize_t stdin_close (void);
+ssize_t stdin_read (char *buf, size_t size);
+ssize_t stdin_write (const char *buf, size_t size);
 
 #endif

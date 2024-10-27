@@ -1,7 +1,7 @@
 #include "arch/VGA.h"
-#include "arch/keycode.h"
 #include "arch/keyboard.h"
 #include "arch/atomic.h"
+#include "drivers/keycode.h"
 #include "lamune/types.h"
 #include "lamune/printk.h"
 

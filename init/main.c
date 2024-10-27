@@ -1,23 +1,15 @@
 #include "arch/VGA.h"
 #include "arch/keyboard.h"
 #include "arch/interrupt.h"
+#include "drivers/stdin.h"
 
 #include "lamune/printk.h"
 
-void keyboard_hook (unsigned char code)
-{
-	printk ("%d ");
-}
-
 void kernel_init (void)
 {
+	stdin_open ();
 	vga_open ();
 	keyboard_init ();
-	if (keyboard_insert_hook (keyboard_hook) < 0)
-	{
-		printk ("Failed to insert hook");
-		return ;
-	}
 	interrupt_init ();
 
 	printk ("Input> ");
