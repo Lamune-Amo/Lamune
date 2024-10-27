@@ -11,7 +11,7 @@ static unsigned short *video;
 static unsigned char color;
 static size_t x, y;
 
-size_t vga_open (void)
+ssize_t vga_open (void)
 {
 	video = (unsigned short *) VIDEO_RAM_ADDRESS;
 	color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
@@ -21,7 +21,7 @@ size_t vga_open (void)
 	return 1;
 }
 
-size_t vga_read (char *buf, size_t size)
+ssize_t vga_read (char *buf, size_t size)
 {
 	return 0;
 }
@@ -65,7 +65,7 @@ static void vga_backward (void)
 	}
 }
 
-size_t vga_write (const char *buf, size_t size)
+ssize_t vga_write (const char *buf, size_t size)
 {
 	size_t i, j;
 
@@ -110,7 +110,7 @@ size_t vga_write (const char *buf, size_t size)
 	return size;
 }
 
-size_t vga_close (void)
+ssize_t vga_close (void)
 {
 	return 0;
 }

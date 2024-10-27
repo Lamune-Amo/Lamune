@@ -2,9 +2,9 @@
 #include "arch/VGA.h"
 #include "arch/keyboard.h"
 
-interrupt_control_t interrupt_stack;
-interrupt_table_t interrupt_trap;
-interrupt_table_t interrupt_irq;
+interrupt_stack_t interrupt_stack;
+interrupt_table_t interrupt_trap[2];
+interrupt_table_t interrupt_irq[2];
 
 void interrupt_init (void)
 {

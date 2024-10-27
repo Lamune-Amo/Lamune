@@ -91,4 +91,11 @@
 #define KEY_NUMLOCK			84
 #define KEY_SCROLLLOCK		85
 
+#define KEY_RIGHTALT		86
+#define KEY_RIGHTCTRL		87
+#define KEY_UPARROW			88
+#define KEY_LEFTARROW		89
+#define KEY_DOWNARROW		90
+#define KEY_RIGHTARROW		91
+
 #endif

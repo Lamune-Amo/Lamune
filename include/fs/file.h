@@ -5,10 +5,10 @@
 
 struct file_io
 {
-	size_t (*open) (void);
-	size_t (*close) (void);
-	size_t (*read) (char *buf, size_t size);
-	size_t (*write) (const char *buf, size_t size);
+	ssize_t (*open) (void);
+	ssize_t (*close) (void);
+	ssize_t (*read) (char *buf, size_t size);
+	ssize_t (*write) (const char *buf, size_t size);
 };
 
 #endif

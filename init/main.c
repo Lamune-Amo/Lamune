@@ -4,11 +4,21 @@
 
 #include "lamune/printk.h"
 
+void keyboard_hook (unsigned char code)
+{
+	printk ("%d ");
+}
+
 void kernel_init (void)
 {
-	interrupt_init ();
 	vga_open ();
-	keyboard_open ();
+	keyboard_init ();
+	if (keyboard_insert_hook (keyboard_hook) < 0)
+	{
+		printk ("Failed to insert hook");
+		return ;
+	}
+	interrupt_init ();
 
 	printk ("Input> ");
 

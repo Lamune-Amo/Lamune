@@ -1,15 +1,17 @@
 #ifndef _ARCH_INTERRUPT_H_
 #define _ARCH_INTERRUPT_H_
 
-typedef void (*interrupt_table_t[2]) (void);
+#include "lamune/types.h"
 
-typedef struct _interrupt_contorl interrupt_control_t;
-struct _interrupt_contorl
+typedef void (*interrupt_table_t) (void);
+
+typedef struct _interrupt_stack interrupt_stack_t;
+struct _interrupt_stack
 {
-	int fp;
-	int sp;
-	int lr;
-	char stack[64];
+	uint32_t fp;
+	uint32_t sp;
+	uint32_t lr;
+	char stack[1024];
 };
 
 void interrupt_init (void);

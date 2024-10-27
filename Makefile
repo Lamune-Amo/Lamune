@@ -3,7 +3,7 @@ OBJCOPY		= /home/yahong/Binutils/install/bin/amo-linux-objcopy
 
 CC			= /home/yahong/GCC/install/bin/amo-linux-gcc
 CFLAGS		= -fno-builtin -fno-exceptions -fno-stack-protector \
-			  -nostdlib -nodefaultlibs -ffreestanding 
+			  -nostdlib -nodefaultlibs -ffreestanding
 
 LD			= /home/yahong/Binutils/install/bin/amo-linux-ld
 
@@ -46,7 +46,7 @@ $(BIN):
 
 $(COE):
 	@$(OBJCOPY) -O binary $(BIN) _temp_coe
-	@xxd -g4 _temp_coe | cut --characters=11-45 > $(COE)
+	@xxd -g4 -c32 _temp_coe | cut --characters=11-81 > $(COE)
 	@$(RM) _temp_coe
 	@echo "COE\t" $(COE)
 
