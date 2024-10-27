@@ -1,6 +1,8 @@
 #ifndef _ARCH_KEYBOARD_
 #define _ARCH_KEYBOARD_
 
+#include "lamune/types.h"
+
 typedef void (*keyboard_hook_t) (unsigned char code);
 
 void keyboard_irq (void);

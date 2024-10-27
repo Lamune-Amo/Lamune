@@ -125,3 +125,15 @@ void vga_clear (void)
 	for (i = 0; i < VIDEO_TEXT_HEIGHT * VIDEO_TEXT_WIDTH; i++)
 		video[i] = 0;
 }
+
+void vga_cursor (int on)
+{
+	if (on)
+	{
+		video[x + y * VIDEO_TEXT_WIDTH] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
+	}
+	else
+	{
+		video[x + y * VIDEO_TEXT_WIDTH] = ((BLACK & 0xF) << 12 | (BLACK & 0xF) << 8) | (' ' & 0xFF);
+	}
+}

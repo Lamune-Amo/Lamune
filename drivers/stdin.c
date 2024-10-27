@@ -1,6 +1,8 @@
+#include "arch/VGA.h"
 #include "arch/keyboard.h"
 #include "drivers/stdin.h"
 #include "drivers/keycode.h"
+#include "lamune/printk.h"
 #include "lamune/types.h"
 #include "lamune/assert.h"
 
@@ -12,7 +14,9 @@ struct ascii_field
 	uint32_t flags:8;
 	uint32_t upper:8;
 	uint32_t lower:8;
-} printable[] = {
+};
+
+static struct ascii_field printable[] = {
 	[KEY_1] = {KEYBOARD_FLAG_SHIFT, '!', '1'},
 	[KEY_2] = {KEYBOARD_FLAG_SHIFT, '@', '2'},
 	[KEY_3] = {KEYBOARD_FLAG_SHIFT, '#', '3'},
@@ -67,9 +71,9 @@ struct ascii_field
 	[KEY_N] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, 'N', 'n'},
 	[KEY_M] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, 'M', 'm'},
 
-	[KEY_COMMA] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, '<', ','},
-	[KEY_DOT] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, '>', '.'},
-	[KEY_SLASH] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, '?', '/'},
+	[KEY_COMMA] = {KEYBOARD_FLAG_SHIFT, '<', ','},
+	[KEY_DOT] = {KEYBOARD_FLAG_SHIFT, '>', '.'},
+	[KEY_SLASH] = {KEYBOARD_FLAG_SHIFT, '?', '/'},
 	[KEY_KPASTERISK] = {0, 0, '*'},
 	[KEY_SPACE] = {0, 0, ' '},
 
@@ -93,8 +97,11 @@ struct ascii_field
 	[KEY_KPDOT] = {0, 0, '.'},
 };
 
-static bool shift;
-static bool capslock;
+char *buffer;
+size_t index;
+bool stdin_leftshift;
+bool stdin_rightshift;
+bool stdin_capslock;
 
 void stdin_hook (uint8_t code)
 {
@@ -105,41 +112,52 @@ void stdin_hook (uint8_t code)
     switch (code)
     {
         case KEY_LEFTSHIFT:
-            shift = true;
+            stdin_leftshift = true;
             return ;
         
         case KEY_LEFTSHIFT + KEY_RELEASE_OFFSET:
-            shift = false;
+            stdin_leftshift = false;
             return ;
-        
+
+		case KEY_RIGHTSHIFT:
+			stdin_rightshift = true;
+            return ;
+
+		case KEY_RIGHTSHIFT + KEY_RELEASE_OFFSET:
+			stdin_rightshift = false;
+            return ;
+
         case KEY_CAPSLOCK:
-            capslock = ~capslock;
+            stdin_capslock = ~stdin_capslock;
             return ;
 
         default:
+			break;
     }
 
 	plain = &printable[code];
 	character = plain->lower;
 
-    shifton = shift && (plain->flags & KEYBOARD_FLAG_SHIFT);
-    capson = capslock && (plain->flags & KEYBOARD_FLAG_CAPSLOCK);
-
+    shifton = (plain->flags & KEYBOARD_FLAG_SHIFT) && (stdin_leftshift || stdin_rightshift);
+    capson = (plain->flags & KEYBOARD_FLAG_CAPSLOCK) && stdin_capslock;
 	if (plain->upper)
     {
-        if (shift && capson) ;
-        else if (shift || capson)
+        if (shifton && capson) ;
+        else if (shifton || capson)
             character = plain->upper;
     }
 	if (!character)
 		return ;
-    printk ("%c", character);
+
+	printk ("%c", character);
 }
 
 ssize_t stdin_open (void)
 {
-    shift = false;
-    capslock = false;
+	buffer = NULL;
+    stdin_leftshift = false;
+    stdin_rightshift = false;
+    stdin_capslock = false;
 	if (keyboard_insert_hook (stdin_hook) < 0)
         assert (false);
 
@@ -153,6 +171,30 @@ ssize_t stdin_close (void)
 
 ssize_t stdin_read (char *buf, size_t size)
 {
+	int old_index;
+
+	index = 0;
+	old_index = 0;
+	buffer = buf;
+	while (1)
+	{
+		if (old_index != index)
+		{
+			vga_write (&buffer[index], 1);
+			if (buffer[index] == 0x8)
+			{
+				index--;
+				continue;
+			}
+			if (buffer[index] == '\n')
+				break;
+			old_index = index;
+		}
+	}
+
+	buffer = NULL;
+
+	return index > size ? size : index;
 }
 
 ssize_t stdin_write (const char *buf, size_t size)

@@ -27,5 +27,6 @@ ssize_t vga_close (void);
 
 /* extension */
 void vga_clear (void);
+void vga_cursor (int on);
 
 #endif
