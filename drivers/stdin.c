@@ -28,7 +28,7 @@ struct ascii_field
 	[KEY_EQUAL] = {KEYBOARD_FLAG_SHIFT, '+', '='},
 	[KEY_BACKSPACE] = {0, 0, 0x8},
 	[KEY_TAB] = {0, 0, '\t'},
-	
+
 	[KEY_Q] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, 'Q', 'q'},
 	[KEY_W] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, 'W', 'w'},
 	[KEY_E] = {KEYBOARD_FLAG_SHIFT | KEYBOARD_FLAG_CAPSLOCK, 'E', 'e'},
