@@ -137,6 +137,8 @@ void stdin_hook (uint8_t code)
 
 	plain = &printable[code];
 	character = plain->lower;
+	if (!character)
+		return ;
 
     shifton = (plain->flags & KEYBOARD_FLAG_SHIFT) && (stdin_leftshift || stdin_rightshift);
     capson = (plain->flags & KEYBOARD_FLAG_CAPSLOCK) && stdin_capslock;
@@ -146,8 +148,6 @@ void stdin_hook (uint8_t code)
         else if (shifton || capson)
             character = plain->upper;
     }
-	if (!character)
-		return ;
 
 	printk ("%c", character);
 }

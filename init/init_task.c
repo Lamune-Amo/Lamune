@@ -14,4 +14,3 @@ struct task_struct init_task = {
     .fs = &init_files,
     .sig_handler = &init_signals
 };
-
