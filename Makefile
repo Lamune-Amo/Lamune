@@ -12,10 +12,10 @@ RM			= rm -rf
 ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c arch/keyboard.c arch/atomic.c
 BOOT		= boot/boot.s
 DRIVERS		= drivers/stdin.c
-INIT		= init/main.c
-KERNEL		= kernel/assert.c kernel/printk.c
+INIT		= init/main.c init/init_task.c
+KERNEL		= kernel/schedule.c
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c
-LIB			= lib/string.c lib/unistd.c
+LIB			= lib/string.c lib/unistd.c lib/printk.c lib/assert.c
 
 SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(INIT) $(KERNEL) $(LIB) $(addprefix lib/soft/, $(LIBSOFT))
 INCS		= -Iinclude
