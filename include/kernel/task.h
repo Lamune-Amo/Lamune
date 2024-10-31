@@ -13,5 +13,8 @@ struct task_struct
 };
 
 extern struct task_struct init_task;
+extern struct task_struct *current_task;
+
+#define CURRENT_TASK (current_task)
 
 #endif

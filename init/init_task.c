@@ -1,8 +1,28 @@
+#include "drivers/stdin.h"
+#include "drivers/stdout.h"
 #include "kernel/task.h"
 
+static struct file stdin = {
+    .fd = 0,
+    .f_ops = &stdin_ops,
+    .read_buf = { 0, }
+};
+
+static struct file stdout = {
+    .fd = 1,
+    .f_ops = &stdout_ops,
+    .read_buf = { 0, }
+};
+
+static struct file stderr = {
+    .fd = 2,
+    .f_ops = &stdout_ops,
+    .read_buf = { 0, }
+};
+
 static struct files_struct init_files = {
-    .fd = { 0, },
-	.open_fds = 0
+    .fd = { &stdin, &stdout, &stderr },
+	.open_fds = 0b00000111
 };
 
 static struct signal_struct init_signals = {
@@ -10,8 +30,7 @@ static struct signal_struct init_signals = {
 };
 
 struct task_struct init_task = {
-    .pid = 0,
+    .pid = 1,
     .fs = &init_files,
     .sig_handler = &init_signals
 };
-

@@ -172,30 +172,7 @@ ssize_t stdin_close (struct file *fp)
 
 ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 {
-	int old_index;
 
-	index = 0;
-	old_index = 0;
-	buffer = buf;
-	while (1)
-	{
-		if (old_index != index)
-		{
-			vga_write (&buffer[index], 1);
-			if (buffer[index] == 0x8)
-			{
-				index--;
-				continue;
-			}
-			if (buffer[index] == '\n')
-				break;
-			old_index = index;
-		}
-	}
-
-	buffer = NULL;
-
-	return index > size ? size : index;
 }
 
 ssize_t stdin_write (struct file *fp, const char *buf, size_t size)

@@ -1,7 +1,7 @@
-#include "arch/VGA.h"
 #include "arch/keyboard.h"
 #include "arch/interrupt.h"
 #include "drivers/stdin.h"
+#include "drivers/stdout.h"
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 
@@ -10,9 +10,9 @@ void kernel_init (void)
 	char buffer[32];
 	int size;
 
-	vga_open ();
+	stdout_ops.open (NULL, NULL);
 	keyboard_init ();
-	stdin_open ();
+	stdin_ops.open (NULL, NULL);
 	interrupt_init ();
 
 	printk ("Input> ");

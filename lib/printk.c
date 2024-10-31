@@ -1,4 +1,4 @@
-#include "arch/VGA.h"
+#include "lamune/unistd.h"
 #include "lamune/stdarg.h"
 #include "lamune/string.h"
 #include "lamune/printk.h"
@@ -171,9 +171,7 @@ int printk (const char *format, ...)
 
 	va_end (args);
 
-	vga_write (info.buffer, info.offset);
-
-	return info.offset;
+	return write (1, info.buffer, info.offset);
 }
 
 int vprintk (const char *format, va_list args)
@@ -197,8 +195,6 @@ int vprintk (const char *format, va_list args)
 		}
 	}
 
-	vga_write (info.buffer, info.offset);
-
-	return info.offset;
+	return write (1, info.buffer, info.offset);
 }
 
