@@ -5,19 +5,16 @@
 static struct file stdin = {
     .fd = 0,
     .f_ops = &stdin_ops,
-    .read_buf = { 0, }
 };
 
 static struct file stdout = {
     .fd = 1,
     .f_ops = &stdout_ops,
-    .read_buf = { 0, }
 };
 
 static struct file stderr = {
     .fd = 2,
     .f_ops = &stdout_ops,
-    .read_buf = { 0, }
 };
 
 static struct files_struct init_files = {

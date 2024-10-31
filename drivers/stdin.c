@@ -154,11 +154,17 @@ void stdin_hook (uint8_t code)
 
 	if (stdin_buffer)
 	{
-		write (1, &character, 1);
 		if (character == 0x8)
-			stdin_buffer[--stdin_index] = ' ';
-		else
-			stdin_buffer[stdin_index++] = character;
+		{
+			if (stdin_index > 0)
+			{
+				stdin_buffer[--stdin_index] = ' ';
+				write (1, &character, 1);
+			}
+			return ;
+		}
+		stdin_buffer[stdin_index++] = character;
+		write (1, &character, 1);
 	}
 }
 
