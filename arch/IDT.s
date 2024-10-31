@@ -1,6 +1,7 @@
 	.text
 	.align	4
 	.global IDT
+	.extern current_task
 	.extern interrupt_stack
 	.extern interrupt_irq
 IDT:
@@ -28,16 +29,9 @@ idt_trap:
 idt_irq:
 	; save stack frame
 	; r27 (interrupt only)
-	mov r27, interrupt_stack
-	str [r27], fp
-	str [r27, $4], sp
-	str [r27, $8], lr
+	mov r27, current_task
 
-	; switch to kerenl stack
-	add sp, r27, $1032 ; 12 + 1024 - 4(margin)
-	
 	; save regs
-	sub sp, sp, $108
 	str [sp], r0
 	str [sp, $4], r1
 	str [sp, $8], r2
@@ -65,6 +59,14 @@ idt_irq:
 	str [sp, $96], r24
 	str [sp, $100], r25
 	str [sp, $104], r28
+	str [r27], fp
+	str [r27, $4], sp
+	str [r27, $8], lr
+
+
+
+	; switch to kerenl stack
+	add sp, r27, $1032 ; 12 + 1024 - 4(margin)
 
 	; get irq device number from interrupt controller
 	mov r0, $8896

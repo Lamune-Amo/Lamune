@@ -5,9 +5,21 @@
 #include "kernel/signal.h"
 #include "lamune/types.h"
 
+enum task_state
+{
+	READY = 0,
+	RUNNING
+};
+
 struct task_struct
 {
-    ssize_t pid;
+	uint32_t state;
+    uint32_t pid;
+
+	/* regs must be after 8 bytes */
+	uint32_t regs[30];
+
+	/* handler */
     struct files_struct *fs;
     struct signal_struct *sig_handler;
 };
