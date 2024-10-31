@@ -16,7 +16,7 @@ struct file_operations
 	ssize_t (*write) (struct file *fp, const char *buf, size_t size);
 
 	int (*open) (struct inode *path, struct file *fp);
-	ssize_t (*close) (void);
+	ssize_t (*close) (struct file *fp);
 };
 
 struct file

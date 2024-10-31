@@ -2,6 +2,7 @@
 #include "arch/keyboard.h"
 #include "drivers/stdin.h"
 #include "drivers/keycode.h"
+#include "fs/vfs.h"
 #include "lamune/printk.h"
 #include "lamune/types.h"
 #include "lamune/assert.h"
@@ -152,7 +153,7 @@ void stdin_hook (uint8_t code)
 	printk ("%c", character);
 }
 
-ssize_t stdin_open (void)
+ssize_t stdin_open (struct inode *path, struct file *fp)
 {
 	buffer = NULL;
     stdin_leftshift = false;
@@ -164,12 +165,12 @@ ssize_t stdin_open (void)
     return 1;
 }
 
-ssize_t stdin_close (void)
+ssize_t stdin_close (struct file *fp)
 {
     return 0;
 }
 
-ssize_t stdin_read (char *buf, size_t size)
+ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 {
 	int old_index;
 
@@ -197,7 +198,14 @@ ssize_t stdin_read (char *buf, size_t size)
 	return index > size ? size : index;
 }
 
-ssize_t stdin_write (const char *buf, size_t size)
+ssize_t stdin_write (struct file *fp, const char *buf, size_t size)
 {
     return 0;
 }
+
+struct file_operations stdin_ops = {
+	.read = stdin_read,
+	.write = stdin_write,
+	.open = stdin_open,
+	.close = stdin_close
+};
