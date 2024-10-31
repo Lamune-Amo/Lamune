@@ -10,6 +10,8 @@
 #define CLEAR_BIT_CHAR(val, pos) (val &= (0xfe << pos))
 #define IF_BIT_SET(val, pos) (val & (1 << pos))
 
+struct file;
+
 struct inode
 {
 
@@ -31,7 +33,8 @@ struct file
 	char read_buf[FILE_READ_BUFFER_SIZE];
 };
 
-struct files_struct {
+struct files_struct
+{
     struct file *fd[NR_OPEN];
 	unsigned char open_fds;
 };

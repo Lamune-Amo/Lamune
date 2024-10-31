@@ -1,5 +1,4 @@
 #include "arch/VGA.h"
-#include "fs/file.h"
 #include "lamune/types.h"
 
 #define VIDEO_RAM_ADDRESS 4096

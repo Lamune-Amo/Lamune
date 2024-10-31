@@ -19,9 +19,6 @@ void kernel_init (void)
 
 	while (1)
 	{
-		vga_cursor (1);
-		sleep (1);
-		vga_cursor (0);
-		sleep (1);
+		read (0, buffer, 32);
 	}
 }
