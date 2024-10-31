@@ -1,8 +1,10 @@
+#include "arch/atomic.h"
 #include "arch/VGA.h"
 #include "arch/keyboard.h"
 #include "drivers/stdin.h"
 #include "drivers/keycode.h"
 #include "fs/vfs.h"
+#include "lamune/unistd.h"
 #include "lamune/printk.h"
 #include "lamune/types.h"
 #include "lamune/assert.h"
@@ -98,8 +100,8 @@ static struct ascii_field printable[] = {
 	[KEY_KPDOT] = {0, 0, '.'},
 };
 
-char *buffer;
-size_t index;
+char *stdin_buffer;
+size_t stdin_index;
 bool stdin_leftshift;
 bool stdin_rightshift;
 bool stdin_capslock;
@@ -150,12 +152,20 @@ void stdin_hook (uint8_t code)
             character = plain->upper;
     }
 
-	printk ("%c", character);
+	if (stdin_buffer)
+	{
+		write (1, &character, 1);
+		if (character == 0x8)
+			stdin_buffer[--stdin_index] = ' ';
+		else
+			stdin_buffer[stdin_index++] = character;
+	}
 }
 
 ssize_t stdin_open (struct inode *path, struct file *fp)
 {
-	buffer = NULL;
+	stdin_buffer = NULL;
+	stdin_index = 0;
     stdin_leftshift = false;
     stdin_rightshift = false;
     stdin_capslock = false;
@@ -172,7 +182,27 @@ ssize_t stdin_close (struct file *fp)
 
 ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 {
+	int i;
 
+	/* store user buffer pointer in buf */
+	while (!atomic_cas_addr ((void **) &stdin_buffer, NULL, buf));
+	stdin_index = 0;
+
+	while (1)
+	{
+		for (i = 0; i < stdin_index; i++)
+		{
+			if (stdin_buffer[i] == '\n')
+				goto end;
+		}
+		/* ++ cursor */
+	}
+
+end:
+	/* restore */
+	while (!atomic_cas_addr ((void **) &stdin_buffer, buf, NULL));
+
+	return stdin_index;
 }
 
 ssize_t stdin_write (struct file *fp, const char *buf, size_t size)

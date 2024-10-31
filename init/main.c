@@ -7,7 +7,7 @@
 
 void kernel_init (void)
 {
-	char buffer[32];
+	char buffer[64];
 	int size;
 
 	stdout_ops.open (NULL, NULL);
@@ -19,6 +19,8 @@ void kernel_init (void)
 
 	while (1)
 	{
-		read (0, buffer, 32);
+		size = read (0, buffer, 64);
+		buffer[size] = 0;
+		printk ("[%s]\n", buffer);
 	}
 }
