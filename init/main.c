@@ -2,6 +2,7 @@
 #include "arch/interrupt.h"
 #include "drivers/stdin.h"
 #include "drivers/stdout.h"
+#include "kernel/task.h"
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 

@@ -9,12 +9,12 @@ LD			= /home/yahong/Binutils/install/bin/amo-linux-ld
 
 RM			= rm -rf
 
-ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c arch/keyboard.c arch/atomic.c
+ARCH		= arch/IDT.s arch/interrupt.c arch/VGA.c arch/keyboard.c arch/timer.c arch/atomic.c
 BOOT		= boot/boot.s
 DRIVERS		= drivers/stdin.c drivers/stdout.c
 FS			= fs/vfs.c
 INIT		= init/main.c init/init_task.c
-KERNEL		= kernel/schedule.c
+KERNEL		= kernel/schedule.c kernel/RR.c
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c
 LIB			= lib/string.c lib/unistd.c lib/printk.c lib/assert.c
 

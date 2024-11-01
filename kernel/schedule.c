@@ -11,10 +11,6 @@ void schedule (struct task_struct *task)
     /* !!! This can be called from INTERRUPT handler */
     struct task_struct *next;
 
-    task->remains--;
-    if (task->remains)
-        return ;
-
     task->state = READY;
 	asm volatile (
 		"mov\t\t%0, r26\n\t"

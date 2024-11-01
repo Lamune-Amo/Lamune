@@ -8,5 +8,5 @@ void timer_irq (void)
         return ;
     
     /* context switching */
-    schedule ();
+    schedule (CURRENT_TASK);
 }
