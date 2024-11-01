@@ -6,12 +6,13 @@
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 
+#include "kernel/schedule.h"
 #include "arch/VGA.h"
 void timer_screen (void)
 {
 	unsigned short *video = (unsigned short *) 4096;
 	unsigned char color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
-	unsigned char ch = 'a';
+	unsigned char ch = 'A';
 
 	while (1)
 	{
@@ -46,8 +47,8 @@ static struct signal_struct init_signals = {
 };
 
 struct task_struct timer_task = {
-    .state = RUNNING,
-    .pid = 1,
+    .state = READY,
+    .pid = 2,
     .regs = { 0, },
 	.pc = (int) timer_screen,
     .remains = 1,
@@ -66,6 +67,7 @@ void kernel_init (void)
 	interrupt_init ();
 
 	printk ("Input> ");
+	schedule_register (&timer_task);
 
 	while (1)
 	{
