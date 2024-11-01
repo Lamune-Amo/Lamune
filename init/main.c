@@ -46,10 +46,17 @@ static struct signal_struct init_signals = {
     .sighandler = NULL
 };
 
+char stack[32];
+
 struct task_struct timer_task = {
     .state = READY,
     .pid = 2,
-    .regs = { 0, },
+    .regs = {
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, (int)stack, 0
+	},
 	.pc = (int) timer_screen,
     .remains = 1,
     .fs = &init_files,
