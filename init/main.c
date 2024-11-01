@@ -6,6 +6,55 @@
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 
+#include "arch/VGA.h"
+void timer_screen (void)
+{
+	unsigned short *video = (unsigned short *) 4096;
+	unsigned char color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
+	unsigned char ch = 'a';
+
+	while (1)
+	{
+		*video = (color << 8) | (ch & 0xFF);;
+		ch++;
+		sleep (1);
+	}
+}
+
+static struct file stdin = {
+    .fd = 0,
+    .f_ops = &stdin_ops,
+};
+
+static struct file stdout = {
+    .fd = 1,
+    .f_ops = &stdout_ops,
+};
+
+static struct file stderr = {
+    .fd = 2,
+    .f_ops = &stdout_ops,
+};
+
+static struct files_struct init_files = {
+    .fd = { &stdin, &stdout, &stderr },
+	.open_fds = 0b00000111
+};
+
+static struct signal_struct init_signals = {
+    .sighandler = NULL
+};
+
+struct task_struct timer_task = {
+    .state = RUNNING,
+    .pid = 1,
+    .regs = { 0, },
+	.pc = (int) timer_screen,
+    .remains = 1,
+    .fs = &init_files,
+    .sig_handler = &init_signals
+};
+
 void kernel_init (void)
 {
 	char buffer[64];

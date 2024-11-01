@@ -30,6 +30,7 @@ struct task_struct init_task = {
     .state = RUNNING,
     .pid = 1,
     .regs = { 0, },
+    .pc = 0,
     .remains = 1,
     .fs = &init_files,
     .sig_handler = &init_signals
