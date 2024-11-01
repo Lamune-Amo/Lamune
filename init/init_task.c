@@ -27,7 +27,10 @@ static struct signal_struct init_signals = {
 };
 
 struct task_struct init_task = {
+    .state = RUNNING,
     .pid = 1,
+    .regs = { 0, },
+    .remains = 1,
     .fs = &init_files,
     .sig_handler = &init_signals
 };

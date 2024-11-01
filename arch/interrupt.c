@@ -1,8 +1,9 @@
 #include "arch/interrupt.h"
+#include "arch/timer.h"
 #include "arch/VGA.h"
 #include "arch/keyboard.h"
 
-interrupt_stack_t interrupt_stack;
+char interrupt_stack[512];
 
 /* Trap */
 interrupt_table_t interrupt_trap[2] = {
@@ -12,8 +13,8 @@ interrupt_table_t interrupt_trap[2] = {
 
 /* IRQ */
 interrupt_table_t interrupt_irq[2] = {
-	/* device:0 */ NULL,
-	/* device:1 */ &keyboard_irq
+	/* device:0 */ timer_irq,
+	/* device:1 */ keyboard_irq
 };
 
 void interrupt_init (void)

@@ -30,43 +30,46 @@ idt_irq:
 	; save stack frame
 	; r27 (interrupt only)
 	mov r27, current_task
+	ldr r27, [r27]
+
+	; offset
+	add r27, r27, $8
 
 	; save regs
-	str [sp], r0
-	str [sp, $4], r1
-	str [sp, $8], r2
-	str [sp, $12], r3
-	str [sp, $16], r4
-	str [sp, $20], r5
-	str [sp, $24], r6
-	str [sp, $28], r7
-	str [sp, $32], r8
-	str [sp, $36], r9
-	str [sp, $40], r10
-	str [sp, $44], r11
-	str [sp, $48], r12
-	str [sp, $52], r13
-	str [sp, $56], r14
-	str [sp, $60], r15
-	str [sp, $64], r16
-	str [sp, $68], r17
-	str [sp, $72], r18
-	str [sp, $76], r19
-	str [sp, $80], r20
-	str [sp, $84], r21
-	str [sp, $88], r22
-	str [sp, $92], r23
-	str [sp, $96], r24
-	str [sp, $100], r25
-	str [sp, $104], r28
-	str [r27], fp
-	str [r27, $4], sp
-	str [r27, $8], lr
-
-
+	str [r27], r0
+	str [r27, $4], r1
+	str [r27, $8], r2
+	str [r27, $12], r3
+	str [r27, $16], r4
+	str [r27, $20], r5
+	str [r27, $24], r6
+	str [r27, $28], r7
+	str [r27, $32], r8
+	str [r27, $36], r9
+	str [r27, $40], r10
+	str [r27, $44], r11
+	str [r27, $48], r12
+	str [r27, $52], r13
+	str [r27, $56], r14
+	str [r27, $60], r15
+	str [r27, $64], r16
+	str [r27, $68], r17
+	str [r27, $72], r18
+	str [r27, $76], r19
+	str [r27, $80], r20
+	str [r27, $84], r21
+	str [r27, $88], r22
+	str [r27, $92], r23
+	str [r27, $96], r24
+	str [r27, $100], r25
+	str [r27, $104], r28
+	str [r27, $108], fp
+	str [r27, $112], sp
+	str [r27, $116], lr
 
 	; switch to kerenl stack
-	add sp, r27, $1032 ; 12 + 1024 - 4(margin)
+	mov sp, interrupt_stack
+	add sp, sp, $508
 
 	; get irq device number from interrupt controller
 	mov r0, $8896
@@ -78,41 +81,46 @@ idt_irq:
 	ldr r1, [r1]
 
 	jal r1
-	
+
+	; load current task
+	mov r27, current_task
+	ldr r27, [r27]
+
+	; offset
+	add r27, r27, $8
+
 	; restore regs
-	ldr r0, [sp]
-	ldr r1, [sp, $4]
-	ldr r2, [sp, $8]
-	ldr r3, [sp, $12]
-	ldr r4, [sp, $16]
-	ldr r5, [sp, $20]
-	ldr r6, [sp, $24]
-	ldr r7, [sp, $28]
-	ldr r8, [sp, $32]
-	ldr r9, [sp, $36]
-	ldr r10, [sp, $40]
-	ldr r11, [sp, $44]
-	ldr r12, [sp, $48]
-	ldr r13, [sp, $52]
-	ldr r14, [sp, $56]
-	ldr r15, [sp, $60]
-	ldr r16, [sp, $64]
-	ldr r17, [sp, $68]
-	ldr r18, [sp, $72]
-	ldr r19, [sp, $76]
-	ldr r20, [sp, $80]
-	ldr r21, [sp, $84]
-	ldr r22, [sp, $88]
-	ldr r23, [sp, $92]
-	ldr r24, [sp, $96]
-	ldr r25, [sp, $100]
-	ldr r28, [sp, $104]
-	add sp, sp, $108
+	ldr r0, [r27]
+	ldr r1, [r27, $4]
+	ldr r2, [r27, $8]
+	ldr r3, [r27, $12]
+	ldr r4, [r27, $16]
+	ldr r5, [r27, $20]
+	ldr r6, [r27, $24]
+	ldr r7, [r27, $28]
+	ldr r8, [r27, $32]
+	ldr r9, [r27, $36]
+	ldr r10, [r27, $40]
+	ldr r11, [r27, $44]
+	ldr r12, [r27, $48]
+	ldr r13, [r27, $52]
+	ldr r14, [r27, $56]
+	ldr r15, [r27, $60]
+	ldr r16, [r27, $64]
+	ldr r17, [r27, $68]
+	ldr r18, [r27, $72]
+	ldr r19, [r27, $76]
+	ldr r20, [r27, $80]
+	ldr r21, [r27, $84]
+	ldr r22, [r27, $88]
+	ldr r23, [r27, $92]
+	ldr r24, [r27, $96]
+	ldr r25, [r27, $100]
+	ldr r28, [r27, $104]
 
 	; switch to stack
-	ldr lr, [r27, $8]
-	ldr sp, [r27, $4]
-	ldr fp, [r27]
+	ldr fp, [r27, $108]
+	ldr sp, [r27, $112]
+	ldr lr, [r27, $116]
 
 	ret r26
-

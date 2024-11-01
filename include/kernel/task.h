@@ -18,6 +18,10 @@ struct task_struct
 
 	/* regs must be after 8 bytes */
 	uint32_t regs[30];
+	uint32_t pc;
+
+	/* time-slice */
+	uint32_t remains;
 
 	/* handler */
     struct files_struct *fs;
