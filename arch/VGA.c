@@ -125,6 +125,8 @@ void vga_clear (void)
 
 	for (i = 0; i < VIDEO_TEXT_HEIGHT * VIDEO_TEXT_WIDTH; i++)
 		vga_video[i] = 0;
+	vga_x = 0;
+	vga_y = 0;
 }
 
 void vga_cursor (int on)

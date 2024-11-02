@@ -8,6 +8,7 @@
 
 #include "kernel/schedule.h"
 #include "arch/VGA.h"
+#include "arch/timer.h"
 void timer_screen (void)
 {
 	unsigned short *video = (unsigned short *) 4254;
@@ -19,7 +20,7 @@ void timer_screen (void)
 	{
 		*video = (color << 8) | (ch & 0xFF);;
 		ch++;
-		for (i = 0; i < 99999; i++);
+		for (i = 0; i < 999999; i++);
 	}
 }
 
@@ -56,14 +57,14 @@ struct task_struct timer_task = {
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, (int)stack, 0
+		0, 0, 0, 0, ((int)stack + 60), 0
 	},
 	.pc = (int) timer_screen,
     .remains = 1,
     .fs = &init_files,
     .sig_handler = &init_signals
 };
-
+void hexapawn (void);
 void kernel_init (void)
 {
 	char buffer[64];
@@ -77,9 +78,12 @@ void kernel_init (void)
 
 	printk ("Input> ");
 
-//	timer_task.regs[28] = (int)stack - 4;
-//	timer_task.pc = (int) timer_screen;
-//	schedule_register (&timer_task);
+	timer_task.regs[28] = (int)stack + 60;
+	timer_task.pc = (int) timer_screen;
+	timer_task.remains = 1;
+	schedule_register (&timer_task);
+
+	hexapawn ();
 
 	while (1)
 	{

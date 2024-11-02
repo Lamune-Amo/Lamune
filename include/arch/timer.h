@@ -5,7 +5,7 @@
 
 void timer_irq (void);
 
-ssize_t get_seconds (void);
+uint32_t timer_get_seconds (void);
 
 #endif
 
