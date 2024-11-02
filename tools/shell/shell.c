@@ -3,7 +3,7 @@
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 1
+#define BUILTIN_SIZE 2
 
 struct shell_args
 {
@@ -13,7 +13,8 @@ struct shell_args
 
 char *shell_token[16];
 struct shell_args shell_builtin[BUILTIN_SIZE] = {
-	{ "help", builtin_help }
+	{ "help", builtin_help },
+	{ "hexapawn", builtin_hexapawn }
 };
 
 void shell_exec (int argc, char *argv[])
@@ -66,7 +67,7 @@ void shell (void)
 		if (i == BUILTIN_SIZE)
 			shell_exec (argc, shell_token);
 		else
-			shell_builtin[i].handler (argc, shell_token + 1);
+			shell_builtin[i].handler (argc, shell_token);
 	}
 }
 

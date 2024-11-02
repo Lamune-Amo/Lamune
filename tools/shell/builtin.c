@@ -9,8 +9,20 @@ void builtin_help (int argc, char *argv[])
 	
 	if (argc > 1)
 	{
-		printf ("sh: help: too many arguments");
+		printk ("sh: help: too many arguments");
 		return ;
 	}
 	printk ("%s\n", str);
+}
+
+void hexapawn (void);
+void builtin_hexapawn (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: help: too many arguments");
+		return ;
+	}
+	
+	hexapawn ();
 }

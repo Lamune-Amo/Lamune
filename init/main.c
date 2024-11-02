@@ -6,6 +6,7 @@
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 
+#include "lamune/sh.h"
 #include "kernel/schedule.h"
 #include "arch/VGA.h"
 #include "arch/timer.h"
@@ -76,19 +77,12 @@ void kernel_init (void)
 	stdin_ops.open (NULL, NULL);
 	interrupt_init ();
 
-	printk ("Input> ");
-
+	/* temporal */
 	timer_task.regs[28] = (int)stack + 60;
 	timer_task.pc = (int) timer_screen;
 	timer_task.remains = 1;
 	schedule_register (&timer_task);
 
-	hexapawn ();
-
-	while (1)
-	{
-		size = read (0, buffer, 64);
-		buffer[size] = 0;
-		printk ("[%s]\n", buffer);
-	}
+	/* temporal */
+	shell ();
 }
