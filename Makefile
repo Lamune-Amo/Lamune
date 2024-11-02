@@ -17,6 +17,7 @@ INIT		= init/main.c init/init_task.c
 KERNEL		= kernel/schedule.c kernel/RR.c
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c
 LIB			= lib/string.c lib/unistd.c lib/printk.c lib/assert.c
+TOOLS		= tools/shell.c
 
 SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(FS) $(INIT) $(KERNEL) $(LIB) $(addprefix lib/soft/, $(LIBSOFT))
 INCS		= -Iinclude

@@ -10,15 +10,16 @@
 #include "arch/VGA.h"
 void timer_screen (void)
 {
-	unsigned short *video = (unsigned short *) 4096;
+	unsigned short *video = (unsigned short *) 4254;
 	unsigned char color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
 	unsigned char ch = 'A';
+	volatile int i;
 
 	while (1)
 	{
 		*video = (color << 8) | (ch & 0xFF);;
 		ch++;
-		sleep (1);
+		for (i = 0; i < 99999; i++);
 	}
 }
 
@@ -46,7 +47,7 @@ static struct signal_struct init_signals = {
     .sighandler = NULL
 };
 
-char stack[32];
+char stack[64];
 
 struct task_struct timer_task = {
     .state = READY,
@@ -68,13 +69,17 @@ void kernel_init (void)
 	char buffer[64];
 	int size;
 
+	schedule_init ();
 	stdout_ops.open (NULL, NULL);
 	keyboard_init ();
 	stdin_ops.open (NULL, NULL);
 	interrupt_init ();
 
 	printk ("Input> ");
-	schedule_register (&timer_task);
+
+//	timer_task.regs[28] = (int)stack - 4;
+//	timer_task.pc = (int) timer_screen;
+//	schedule_register (&timer_task);
 
 	while (1)
 	{

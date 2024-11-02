@@ -201,7 +201,6 @@ ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 			if (stdin_buffer[i] == '\n')
 				goto end;
 		}
-		/* ++ cursor */
 	}
 
 end:

@@ -34,6 +34,16 @@ void schedule (struct task_struct *task)
     /* restoring the stack frame is performed by INT handler */
 }
 
+void schedule_init (void)
+{
+	current_task = &init_task;
+	current_task->state = RUNNING;
+	current_task->remains = 10;
+
+	/* call to init scheduler */
+	scheduler->schedule_init ();
+}
+
 void schedule_register (struct task_struct *task)
 {
     scheduler->schedule_register (task);

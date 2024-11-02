@@ -10,8 +10,22 @@ struct task_struct *rr_tasks[TASK_NUM_MAX] = {
 unsigned int rr_index = 1;
 
 /* Round Robin */
+void RR_init (void)
+{
+	rr_tasks[0] = &init_task;
+	rr_index = 1;
+}
+
 void RR_register(struct task_struct* task)
 {
+	int i;
+
+	for (i = 0; i < rr_index; i++)
+	{
+		if (rr_tasks[i] == task)
+			return ;
+	}
+
     if (rr_index < TASK_NUM_MAX)
         rr_tasks[rr_index++] = task;
     else
@@ -54,6 +68,7 @@ struct task_struct* RR_get_next(struct task_struct* task)
 }
 
 struct scheduler_ops RR_scheduler = {
+	.schedule_init = RR_init,
     .schedule_register = RR_register,
     .schedule_unregister = RR_unregister,
     .get_next = RR_get_next
