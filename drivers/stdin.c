@@ -138,6 +138,9 @@ void stdin_hook (uint8_t code)
 			break;
     }
 
+	if (code >= KEY_DEFINE_LAST)
+		return ;
+
 	plain = &printable[code];
 	character = plain->lower;
 	if (!character)

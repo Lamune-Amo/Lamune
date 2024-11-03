@@ -9,15 +9,6 @@
 
 #define PLY_DEPTH 5
 
-/* palette */
-#define C_BLACK ""
-#define C_RED ""
-#define C_YELLOW ""
-#define C_WHITE ""
-#define C_BLACK_WHITE ""
-#define C_WHITE_BLACK ""
-#define C_WHITE_BBLUE ""
-
 /* board size */
 #define BOARD_ROW 5
 #define BOARD_COLUMN 5
@@ -539,15 +530,15 @@ void print_state (void)
         printk ("  ");
         for (j = 1; j < BOARD_COLUMN + 1; j++)
         {
-			color = C_WHITE;
+			vga_set_color (WHITE, BLACK);
 			/* position in use */
 			if (COMPARE_POSITION (selected_pawn, i, j))
-				color = C_RED;
+				vga_set_color (RED, BLACK);
 			/* previous moved positions */
 			if (COMPARE_POSITION (moved_position, i, j) || COMPARE_POSITION (origin_position, i, j))
-				color = C_WHITE_BBLUE;
-			printk ("%s", color);
-			printk ("%c" C_WHITE, state[i][j] ? state[i][j] : '*');
+				vga_set_color (WHITE, LIGHT_BLUE);
+			printk ("%c", state[i][j] ? state[i][j] : '*');
+			vga_set_color (WHITE, BLACK);
         }
         printk ("\n");
     }
@@ -597,13 +588,14 @@ void print_evalbar (int *grid)
 {
 	int i;
 
-	printk (C_BLACK_WHITE);
+	vga_set_color (WHITE, BROWN);
 	for (i = 0; i < grid[0]; i++)
 		printk ("%c", i == 0 ? 'W' : ' ');
-	printk (C_WHITE_BLACK);
+	vga_set_color (BROWN, WHITE);
 	for (i = 0; i < grid[1]; i++)
 		printk ("%c", i == grid[1] - 1 ? 'B' : ' ');
-	printk ("\n" C_WHITE);
+	printk ("\n");
+	vga_set_color (WHITE, BLACK);
 }
 
 /*

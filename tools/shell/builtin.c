@@ -1,18 +1,15 @@
+#include "arch/VGA.h"
 #include "lamune/printk.h"
 
-void builtin_help (int argc, char *argv[])
+void builtin_clear (int argc, char *argv[])
 {
-	const char *str = \
-		"sh, version 1.0.0-amo-lamune\n" \
-		"These shell commands are defined internally.  Type `help' to see this list.\n\n" \
-		"hexapawn\n";
-	
 	if (argc > 1)
 	{
-		printk ("sh: help: too many arguments");
+		printk ("sh: clear: too many arguments\n");
 		return ;
 	}
-	printk ("%s\n", str);
+	
+	vga_clear ();
 }
 
 void hexapawn (void);
@@ -20,9 +17,10 @@ void builtin_hexapawn (int argc, char *argv[])
 {
 	if (argc > 1)
 	{
-		printk ("sh: help: too many arguments");
+		printk ("sh: hexapawn: too many arguments\n");
 		return ;
 	}
 	
 	hexapawn ();
 }
+

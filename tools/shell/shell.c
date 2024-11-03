@@ -3,19 +3,39 @@
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 2
+#define BUILTIN_SIZE 3
 
 struct shell_args
 {
-	char name[16];
 	void (*handler) (int argc, char *argv[]);
+	char name[16];
+	char help[32];
 };
 
 char *shell_token[16];
 struct shell_args shell_builtin[BUILTIN_SIZE] = {
-	{ "help", builtin_help },
-	{ "hexapawn", builtin_hexapawn }
+	{ builtin_help, "help" , "" },
+	{ builtin_clear, "clear", "clear the screen" },
+	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" }
 };
+
+void builtin_help (int argc, char *argv[])
+{
+	const char *str = \
+		"sh, version 1.0.0-amo-lamune\n" \
+		"These shell commands are defined internally. Type `help' to see this list.\n\n";
+	int i;
+	
+	if (argc > 1)
+	{
+		printk ("sh: help: too many arguments\n");
+		return ;
+	}
+
+	printk ("%s", str);
+	for (i = 1; i < BUILTIN_SIZE; i++)
+		printk ("%s: %s\n", shell_builtin[i].name, shell_builtin[i].help);
+}
 
 void shell_exec (int argc, char *argv[])
 {
@@ -26,8 +46,13 @@ void shell_exec (int argc, char *argv[])
 int shell_tokenize (char *str)
 {
 	int index;
+	int i;
 	
 	index = 0;
+
+	for (i = strlen(str) - 1; i >= 0 && (str[i] == ' ' || str[i] == '\t'); i--)
+		str[i] = '\0';
+
 	while (*str)
 	{
 		while (*str && (*str == ' ' || *str == '\t'))
@@ -49,6 +74,7 @@ void shell (void)
 	char buf[64];
 	unsigned int size, i;
 	int argc;
+	char *test;
 
 	while (1)
 	{
@@ -58,6 +84,8 @@ void shell (void)
 		buf[size - 1] = 0;
 		/* parse */
 		argc = shell_tokenize (buf);
+		if (argc == 0)
+			continue;
 		/* handle */
 		for (i = 0; i < BUILTIN_SIZE; i++)
 		{

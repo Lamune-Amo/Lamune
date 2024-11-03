@@ -98,4 +98,6 @@
 #define KEY_DOWNARROW		90
 #define KEY_RIGHTARROW		91
 
+#define KEY_DEFINE_LAST		92
+
 #endif

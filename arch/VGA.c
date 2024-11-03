@@ -100,10 +100,10 @@ ssize_t vga_write (const char *buf, size_t size)
 
 			default:
 				if (' ' <= buf[i] && buf[i] <= '~')
-				{
 					vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = (vga_color << 8) | (buf[i] & 0xFF);
-					vga_forward ();
-				}
+				else
+					vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = (vga_color << 8) | (' ' & 0xFF);
+				vga_forward ();
 				break;
 		}
 	}
@@ -140,3 +140,9 @@ void vga_cursor (int on)
 		vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = ((BLACK & 0xF) << 12 | (BLACK & 0xF) << 8) | (' ' & 0xFF);
 	}
 }
+
+void vga_set_color (char foreground, char background)
+{
+	vga_color = (foreground & 0xF) << 4 | (background & 0xF);
+}
+
