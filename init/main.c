@@ -65,6 +65,9 @@ struct task_struct timer_task = {
     .fs = &init_files,
     .sig_handler = &init_signals
 };
+
+extern char _kernel_end;
+
 void hexapawn (void);
 void kernel_init (void)
 {
@@ -82,6 +85,8 @@ void kernel_init (void)
 	timer_task.pc = (int) timer_screen;
 	timer_task.remains = 1;
 	schedule_register (&timer_task);
+
+	printk ("addr: %x %d\n", &_kernel_end, &_kernel_end);
 
 	/* temporal */
 	shell ();
