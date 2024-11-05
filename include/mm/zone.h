@@ -1,15 +1,16 @@
 #ifndef _MMZONE_H_
 #define _MMZONE_H_
 
-#include "types.h"
-#include "paging.h"
+#include "mm/page.h"
+#include "lamune/types.h"
 
 /* zone */
-#define ZONE_COUNT 2
+#define ZONE_COUNT 3
 #define ZONE_NAME_MAX 8
 
 enum zone_selector
 {
+	ZONE_ARCH,
 	ZONE_KERNEL,
 	ZONE_NORMAL
 };
@@ -31,6 +32,13 @@ struct zone
 {
 	char name[ZONE_NAME_MAX];
 
+	unsigned long allocated;
+	unsigned long used;
+
+	/* address */
+	unsigned long start;
+	unsigned long end;
+
 	/* used to allocate a page */
 	struct free_area free_area[MAX_ORDER];
 };
@@ -39,6 +47,8 @@ struct zone
 void mm_zone_init (void);
 struct zone *mm_zone_get (enum zone_selector sel);
 
-void add_page_zone (struct zone *_zone, struct page *page);
+void mm_zone_add_page (struct zone *_zone, struct page *page);
+
+void mm_zone_info (void);
 
 #endif

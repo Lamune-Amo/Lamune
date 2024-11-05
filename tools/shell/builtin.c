@@ -1,5 +1,19 @@
 #include "arch/VGA.h"
+#include "mm/zone.h"
 #include "lamune/printk.h"
+
+void hexapawn (void);
+
+void builtin_mm (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: mm: too many arguments\n");
+		return ;
+	}
+	
+	mm_zone_info ();
+}
 
 void builtin_clear (int argc, char *argv[])
 {
@@ -12,7 +26,6 @@ void builtin_clear (int argc, char *argv[])
 	vga_clear ();
 }
 
-void hexapawn (void);
 void builtin_hexapawn (int argc, char *argv[])
 {
 	if (argc > 1)

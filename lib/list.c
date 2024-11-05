@@ -1,4 +1,5 @@
 #include "lamune/list.h"
+#include "lamune/types.h"
 
 void list_add (struct list_head *new, struct list_head *head)
 {

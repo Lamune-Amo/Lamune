@@ -16,10 +16,11 @@ FS			= fs/vfs.c
 INIT		= init/main.c init/init_task.c
 KERNEL		= kernel/schedule.c kernel/RR.c
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c mulsi3.c
-LIB			= lib/string.c lib/unistd.c lib/printk.c lib/assert.c
+LIB			= lib/string.c lib/unistd.c lib/printk.c lib/list.c lib/assert.c
+MM			= mm/page.c mm/zone.c
 TOOLS		= tools/shell/shell.c tools/shell/builtin.c tools/hexapawn.c
 
-SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(FS) $(INIT) $(KERNEL) $(LIB) $(TOOLS) $(addprefix lib/soft/, $(LIBSOFT))
+SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(FS) $(INIT) $(KERNEL) $(LIB) $(MM) $(TOOLS) $(addprefix lib/soft/, $(LIBSOFT))
 INCS		= -Iinclude
 
 OBJS		= $(patsubst %.s,%.o,$(SRCS)) $(patsubst %.c,%.o,$(SRCS))

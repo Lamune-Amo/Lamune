@@ -1,7 +1,10 @@
 #ifndef _CPU_PAGE_H_
 #define _CPU_PAGE_H_
 
-#include "types.h"
+#include "lamune/types.h"
+#include "lamune/list.h"
+
+#define ARCH_RESERVED_ADDRESS 0x2400
 
 #define PHYSICAL_MEMORY_SIZE (4ULL * 1024 * 1024)
 #define PHYSICAL_FRAME_SIZE (4 * 1024)
@@ -27,11 +30,9 @@ struct page
 /* extern */
 extern char _kernel_end;
 
-void paging_init (void);
+void page_init (void);
 
 uint32_t get_frame_index (const struct page *page);
 struct page *get_frame (int index);
-
-struct page *get_reserved_page (void);
 
 #endif

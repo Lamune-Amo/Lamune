@@ -1,6 +1,8 @@
-#include "paging.h"
-#include "zone.h"
-#include "list.h"
+#include "mm/page.h"
+#include "mm/zone.h"
+#include "lamune/string.h"
+#include "lamune/printk.h"
+#include "lamune/list.h"
 
 /* zones are stacked in kernel memory space in order */
 static struct zone zone[ZONE_COUNT];
@@ -39,12 +41,13 @@ static struct page *get_pair_leader (struct page *p1, struct page *p2)
 	return p1;
 }
 
-void add_page_zone (struct zone *_zone, struct page *page)
+void mm_zone_add_page (struct zone *_zone, struct page *page)
 {
 	struct page *pair;
 	int order;
 
 	order = 0;
+	_zone->allocated += PAGE_SIZE;
 	while (1)
 	{
 		/* if order has reached the end */
@@ -74,7 +77,7 @@ insert:
 static void mm_zone_reset (void)
 {
 	char *names[ZONE_COUNT] = {
-		"KERNEL", "NORMAL"
+		"ARCH", "KERNEL", "NORMAL"
 	};
 	int i, j;
 
@@ -82,6 +85,11 @@ static void mm_zone_reset (void)
 	for (i = 0; i < ZONE_COUNT; i++)
 	{
 		strcpy (zone[i].name, names[i]);
+		zone[i].allocated = 0;
+		zone[i].used = 0;
+
+		zone[i].start = 0;
+		zone[i].end = 0;
 
 		for (j = 0; j < MAX_ORDER; j++)
 		{
@@ -91,13 +99,104 @@ static void mm_zone_reset (void)
 	}
 }
 
-void mm_zone_area_init (void)
+static void mm_zone_add_arch (struct zone *_zone)
+{
+	unsigned int start, end;
+	unsigned int i;
+
+	/* set address range */
+	_zone->start = 0;
+	_zone->end = ARCH_RESERVED_ADDRESS - 1;
+
+	/* add page */
+	start = 0;
+	end = ARCH_RESERVED_ADDRESS >> PAGE_SHIFT;
+
+	/* get the reserved pages for arch zone */
+	for (i = start; i < end; i++)
+		mm_zone_add_page (_zone, get_frame (i));
+}
+
+
+static void mm_zone_add_kernel (struct zone *_zone)
+{
+	unsigned int start, end;
+	unsigned int i;
+
+	/* add page */
+	start = ARCH_RESERVED_ADDRESS >> PAGE_SHIFT;
+	end = ((uint32_t) &_kernel_end >> PAGE_SHIFT) + 1;
+
+	/* set address range */
+	_zone->start = ARCH_RESERVED_ADDRESS;
+	_zone->end = (end << PAGE_SHIFT) - 1;
+
+	/* get the reserved pages for arch zone */
+	for (i = start; i < end; i++)
+		mm_zone_add_page (_zone, get_frame (i));
+}
+
+static void mm_zone_add_normal (struct zone *_zone)
+{
+	unsigned int start, end;
+	unsigned int i;
+
+	/* add page */
+	start = ((uint32_t) &_kernel_end >> PAGE_SHIFT) + 1;
+	end = PHYSICAL_FRAME_COUNT;
+
+	/* set address range */
+	_zone->start = start << PAGE_SHIFT;
+	_zone->end = (end << PAGE_SHIFT) - 1;
+
+	/* get the reserved pages for arch zone */
+	for (i = start; i < end; i++)
+		mm_zone_add_page (_zone, get_frame (i));
+}
+
+static void mm_zone_area_init (void)
 {
 	struct page *page;
+	struct zone *_zone;
 
-	/* reserved pages are stacked in buddy allocator */
-	while ((page = get_reserved_page ()))
-		add_page_zone (&zone[ZONE_NORMAL], page);
+	_zone = zone;
+	mm_zone_add_arch (&_zone[ZONE_ARCH]);
+	mm_zone_add_kernel (&_zone[ZONE_KERNEL]);
+	mm_zone_add_normal (&_zone[ZONE_NORMAL]);
+
+	_zone[ZONE_ARCH].used = _zone[ZONE_ARCH].allocated;
+	_zone[ZONE_KERNEL].used = _zone[ZONE_KERNEL].allocated;
+}
+
+void mm_zone_info (void)
+{
+	struct zone *_zone;
+	unsigned int alloc, used;
+	unsigned int i;
+
+	_zone = zone;
+
+	printk ("Memory\n");
+	printk ("Zone       Allocated   Used    Address\n");
+	printk ("ARCH       %dKB         %dKB	 %x-%x\n",
+			_zone[ZONE_ARCH].allocated / 1024, _zone[ZONE_ARCH].used / 1024,
+			_zone[ZONE_ARCH].start, _zone[ZONE_ARCH].end);
+	printk ("KERNEL     %dKB        %dKB    %x-%x\n",
+			_zone[ZONE_KERNEL].allocated / 1024, _zone[ZONE_KERNEL].used / 1024,
+			_zone[ZONE_KERNEL].start, _zone[ZONE_KERNEL].end);
+	printk ("NORMAL     %dKB      %dKB     %x-%x\n",
+			_zone[ZONE_NORMAL].allocated / 1024, _zone[ZONE_NORMAL].used / 1024,
+			_zone[ZONE_NORMAL].start, _zone[ZONE_NORMAL].end);
+
+	alloc = 0;
+	used = 0;
+	for (i = 0; i < ZONE_COUNT; i++)
+	{
+		alloc += _zone[i].allocated / 1024;
+		used += _zone[i].used / 1024;
+	}
+	printk ("ALL        %dKB      %dKB    %x-%x\n\n", alloc, used,
+			_zone[ZONE_ARCH].start, _zone[ZONE_NORMAL].end);
 }
 
 void mm_zone_init (void)

@@ -1,5 +1,7 @@
 #include "arch/keyboard.h"
 #include "arch/interrupt.h"
+#include "mm/page.h"
+#include "mm/zone.h"
 #include "drivers/stdin.h"
 #include "drivers/stdout.h"
 #include "kernel/task.h"
@@ -12,16 +14,29 @@
 #include "arch/timer.h"
 void timer_screen (void)
 {
-	unsigned short *video = (unsigned short *) 4254;
-	unsigned char color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
-	unsigned char ch = 'A';
-	volatile int i;
+	unsigned short *video;
+	unsigned char color;
+	uint32_t time, minutes, seconds;
+	int i;
 
+	color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
 	while (1)
 	{
-		*video = (color << 8) | (ch & 0xFF);;
-		ch++;
-		for (i = 0; i < 999999; i++);
+		video = (unsigned short *) 4246;
+
+		time = timer_get_seconds ();
+
+		*(video++) = (color << 8) | ('0' + time);
+		/*
+		minutes = time / 60;
+		seconds = time % 60;
+
+		*(video++) = (color << 8) | ('0' + minutes / 10);
+		*(video++) = (color << 8) | ('0' + minutes % 10);
+		*(video++) = (color << 8) | (':');
+		*(video++) = (color << 8) | ('0' + seconds / 10);
+		*(video++) = (color << 8) | ('0' + seconds % 10);
+		*/
 	}
 }
 
@@ -49,7 +64,7 @@ static struct signal_struct init_signals = {
     .sighandler = NULL
 };
 
-char stack[64];
+char stack[128];
 
 struct task_struct timer_task = {
     .state = READY,
@@ -66,14 +81,13 @@ struct task_struct timer_task = {
     .sig_handler = &init_signals
 };
 
-extern char _kernel_end;
-
-void hexapawn (void);
 void kernel_init (void)
 {
 	char buffer[64];
 	int size;
 
+	page_init ();
+	mm_zone_init ();
 	schedule_init ();
 	stdout_ops.open (NULL, NULL);
 	keyboard_init ();
@@ -85,8 +99,6 @@ void kernel_init (void)
 	timer_task.pc = (int) timer_screen;
 	timer_task.remains = 1;
 	schedule_register (&timer_task);
-
-	printk ("addr: %x %d\n", &_kernel_end, &_kernel_end);
 
 	/* temporal */
 	shell ();

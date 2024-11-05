@@ -1,5 +1,5 @@
-#ifndef _LIST_H_
-#define _LIST_H_
+#ifndef _LAMUNE_LIST_H_
+#define _LAMUNE_LIST_H_
 
 struct list_head
 {

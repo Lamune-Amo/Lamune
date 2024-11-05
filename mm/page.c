@@ -1,9 +1,11 @@
-#include "paging.h"
+#include "mm/page.h"
+#include "mm/zone.h"
+#include "lamune/string.h"
 
 /* frames */
 static struct page mm_frames[PHYSICAL_FRAME_COUNT];
 
-static void paging_frame_init (void)
+static void page_frame_init (void)
 {
 	int mapped;
 	int i;
@@ -31,24 +33,7 @@ struct page *get_frame (int a)
 	return &mm_frames[a];
 }
 
-struct page *get_reserved_page (void)
+void page_init (void)
 {
-	static int index = 0;
-
-	/* get the reserved pages in normal zone */
-	for (; index < PHYSICAL_FRAME_COUNT; index++)
-	{
-		if (mm_frames[index]._refcount == 0)
-		{
-			mm_frames[index]._refcount = 1;
-
-			return &mm_frames[index++];
-		}
-	}
-	return NULL;
-}
-
-void paging_init (void)
-{
-	paging_frame_init ();
+	page_frame_init ();
 }

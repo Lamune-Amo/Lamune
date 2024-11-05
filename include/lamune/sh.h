@@ -5,6 +5,7 @@ void shell (void);
 
 /* built-in */
 void builtin_help (int argc, char *argv[]);
+void builtin_mm (int argc, char *argv[]);
 void builtin_clear (int argc, char *argv[]);
 void builtin_hexapawn (int argc, char *argv[]);
 
