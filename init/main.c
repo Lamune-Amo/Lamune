@@ -26,8 +26,6 @@ void timer_screen (void)
 
 		time = timer_get_seconds ();
 
-		*(video++) = (color << 8) | ('0' + time);
-		/*
 		minutes = time / 60;
 		seconds = time % 60;
 
@@ -36,7 +34,6 @@ void timer_screen (void)
 		*(video++) = (color << 8) | (':');
 		*(video++) = (color << 8) | ('0' + seconds / 10);
 		*(video++) = (color << 8) | ('0' + seconds % 10);
-		*/
 	}
 }
 
@@ -73,7 +70,7 @@ struct task_struct timer_task = {
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, ((int)stack + 60), 0
+		0, 0, 0, 0, ((int)stack + 124), 0
 	},
 	.pc = (int) timer_screen,
     .remains = 1,
@@ -95,7 +92,7 @@ void kernel_init (void)
 	interrupt_init ();
 
 	/* temporal */
-	timer_task.regs[28] = (int)stack + 60;
+	timer_task.regs[28] = (int)stack + 124;
 	timer_task.pc = (int) timer_screen;
 	timer_task.remains = 1;
 	schedule_register (&timer_task);
