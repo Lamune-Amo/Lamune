@@ -8,6 +8,7 @@
 #include "lamune/unistd.h"
 #include "lamune/printk.h"
 
+#include "mm/allocator.h"
 #include "lamune/sh.h"
 #include "kernel/schedule.h"
 #include "arch/VGA.h"

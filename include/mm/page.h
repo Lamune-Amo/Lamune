@@ -1,5 +1,5 @@
-#ifndef _CPU_PAGE_H_
-#define _CPU_PAGE_H_
+#ifndef _MM_PAGE_H_
+#define _MM_PAGE_H_
 
 #include "lamune/types.h"
 #include "lamune/list.h"

@@ -1,5 +1,5 @@
-#ifndef _MMZONE_H_
-#define _MMZONE_H_
+#ifndef _MM_ZONE_H_
+#define _MM_ZONE_H_
 
 #include "mm/page.h"
 #include "lamune/types.h"

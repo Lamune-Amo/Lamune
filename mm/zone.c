@@ -47,7 +47,6 @@ void mm_zone_add_page (struct zone *_zone, struct page *page)
 	int order;
 
 	order = 0;
-	_zone->allocated += PAGE_SIZE;
 	while (1)
 	{
 		/* if order has reached the end */
@@ -114,7 +113,10 @@ static void mm_zone_add_arch (struct zone *_zone)
 
 	/* get the reserved pages for arch zone */
 	for (i = start; i < end; i++)
+	{
 		mm_zone_add_page (_zone, get_frame (i));
+		_zone->allocated += PAGE_SIZE;
+	}
 }
 
 
@@ -133,7 +135,10 @@ static void mm_zone_add_kernel (struct zone *_zone)
 
 	/* get the reserved pages for arch zone */
 	for (i = start; i < end; i++)
+	{
 		mm_zone_add_page (_zone, get_frame (i));
+		_zone->allocated += PAGE_SIZE;
+	}
 }
 
 static void mm_zone_add_normal (struct zone *_zone)
@@ -151,7 +156,10 @@ static void mm_zone_add_normal (struct zone *_zone)
 
 	/* get the reserved pages for arch zone */
 	for (i = start; i < end; i++)
+	{
 		mm_zone_add_page (_zone, get_frame (i));
+		_zone->allocated += PAGE_SIZE;
+	}
 }
 
 static void mm_zone_area_init (void)
