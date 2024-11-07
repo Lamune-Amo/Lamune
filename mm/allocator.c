@@ -1,10 +1,9 @@
 #include "mm/page.h"
 #include "mm/zone.h"
 #include "mm/allocator.h"
+#include "mm/compact.h"
 #include "lamune/list.h"
 #include "lamune/assert.h"
-
-#include "lamune/printk.h"
 
 static int get_order_size (size_t size)
 {
@@ -159,14 +158,21 @@ static void kfree_large (const void *ptr)
 
 void *kmalloc (size_t size)
 {
+	if (size <= PAGE_SIZE / 2)
+		return kmalloc_compact (size);
 	return kmalloc_large (size);
 }
 
 void kfree (const void *ptr)
 {
-	assert (ptr != NULL);
-
-	kfree_large (ptr);
+	if (kmalloc_is_compact (ptr))
+	{
+		kfree_compact (ptr);
+	}
+	else
+	{
+		kfree_large (ptr);
+	}
 }
 
 size_t ksize (const void *ptr)
@@ -175,6 +181,12 @@ size_t ksize (const void *ptr)
 	uint32_t frame_index;
 	size_t size;
 	int i;
+
+	size = ksize_compact (ptr);
+	if (size != 0)
+	{
+		return size;
+	}
 
 	frame_index = (uint32_t) ptr >> PAGE_SHIFT;
 	head = &get_frame (frame_index)->chain;

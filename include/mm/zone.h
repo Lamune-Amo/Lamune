@@ -28,6 +28,30 @@ struct free_area
 	unsigned long nr_free;
 };
 
+/* compact allocator */
+
+# define COMPACT_COUNT 7
+
+/* 32, 64, 128, 256, 512, 1024, 2048 */
+# define COMPACT_PAGE_COUNT { 1, 1, 1, 1, 1, 1, 1 }
+# define COMPACT_BITMAP_MAX_SIZE (1 * PAGE_SIZE / 32 / 32)
+
+struct compact_area
+{
+	uint16_t size;
+	uint32_t bitmap[COMPACT_BITMAP_MAX_SIZE];
+
+	uint16_t available;
+
+	struct
+	{
+		void *ptr;
+		uint16_t count;
+	} page;
+};
+
+/* zone */
+
 struct zone
 {
 	char name[ZONE_NAME_MAX];
@@ -41,6 +65,9 @@ struct zone
 
 	/* used to allocate a page */
 	struct free_area free_area[MAX_ORDER];
+
+	/* for compact */
+	struct compact_area compact_area[COMPACT_COUNT];
 };
 
 /* extern */

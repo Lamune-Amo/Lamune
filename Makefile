@@ -17,7 +17,7 @@ INIT		= init/main.c init/init_task.c
 KERNEL		= kernel/schedule.c kernel/RR.c
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c mulsi3.c
 LIB			= lib/string.c lib/unistd.c lib/printk.c lib/list.c lib/assert.c
-MM			= mm/page.c mm/zone.c mm/allocator.c
+MM			= mm/page.c mm/zone.c mm/allocator.c mm/compact.c
 TOOLS		= tools/shell/shell.c tools/shell/builtin.c tools/hexapawn.c
 
 SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(FS) $(INIT) $(KERNEL) $(LIB) $(MM) $(TOOLS) $(addprefix lib/soft/, $(LIBSOFT))

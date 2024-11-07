@@ -1,9 +1,8 @@
-#include "cpu/paging.h"
-
-#include "mm/allocator.h"
+#include "mm/page.h"
 #include "mm/zone.h"
-#include "lris/string.h"
-#include "lris/assert.h"
+#include "mm/allocator.h"
+#include "lamune/string.h"
+#include "lamune/assert.h"
 
 void kmalloc_compact_init (void)
 {
@@ -21,7 +20,7 @@ void kmalloc_compact_init (void)
 		compact->size = 32 << i;
 		memset (compact->bitmap, 0, sizeof (uint32_t) * COMPACT_BITMAP_MAX_SIZE);
 		compact->available = count[i] * PAGE_SIZE / compact->size;
-		compact->page.ptr = alloc_pages (zone, count[i])->virtual;
+		compact->page.ptr = (void *) (get_frame_index (alloc_pages (zone, count[i])) << PAGE_SHIFT);
 		compact->page.count = count[i];
 	}
 }
@@ -91,12 +90,10 @@ int kmalloc_is_compact (const void *ptr)
 	return 0;
 }
 
-void *kmalloc_compact (uint32_t size, gfp_t flags)
+void *kmalloc_compact (uint32_t size)
 {
 	struct zone *zone;
 	int order;
-
-	assert (flags & GFP_KERNEL);
 
 	zone = mm_zone_get (ZONE_NORMAL);
 	order = kmalloc_compact_get_order (size);

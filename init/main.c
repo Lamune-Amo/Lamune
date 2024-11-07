@@ -2,6 +2,7 @@
 #include "arch/interrupt.h"
 #include "mm/page.h"
 #include "mm/zone.h"
+#include "mm/compact.h"
 #include "drivers/stdin.h"
 #include "drivers/stdout.h"
 #include "kernel/task.h"
@@ -86,6 +87,7 @@ void kernel_init (void)
 
 	page_init ();
 	mm_zone_init ();
+	kmalloc_compact_init ();
 	schedule_init ();
 	stdout_ops.open (NULL, NULL);
 	keyboard_init ();
