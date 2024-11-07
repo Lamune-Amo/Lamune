@@ -75,9 +75,10 @@ struct task_struct timer_task = {
 		0, 0, 0, 0, ((int)stack + 124), 0
 	},
 	.pc = (int) timer_screen,
+	.name = "time",
     .remains = 1,
     .fs = &init_files,
-    .sig_handler = &init_signals
+    .sig = &init_signals
 };
 
 void kernel_init (void)

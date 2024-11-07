@@ -16,7 +16,7 @@ void RR_init (void)
 	rr_index = 1;
 }
 
-void RR_register(struct task_struct* task)
+void RR_register (struct task_struct* task)
 {
 	int i;
 
@@ -32,7 +32,7 @@ void RR_register(struct task_struct* task)
         assert (false);
 }
 
-void RR_unregister(struct task_struct* task)
+void RR_unregister (struct task_struct* task)
 {
     int i;
 
@@ -49,7 +49,12 @@ void RR_unregister(struct task_struct* task)
     rr_index--;
 }
 
-struct task_struct* RR_get_next(struct task_struct* task)
+struct task_struct* RR_get_first (void)
+{
+	return rr_tasks[0];
+}
+
+struct task_struct* RR_get_next (struct task_struct* task)
 {
     int i;
 
@@ -71,5 +76,6 @@ struct scheduler_ops RR_scheduler = {
 	.schedule_init = RR_init,
     .schedule_register = RR_register,
     .schedule_unregister = RR_unregister,
+    .get_first = RR_get_first,
     .get_next = RR_get_next
 };

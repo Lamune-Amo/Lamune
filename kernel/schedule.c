@@ -1,5 +1,6 @@
 #include "kernel/task.h"
 #include "kernel/schedule.h"
+#include "lamune/printk.h"
 
 struct task_struct *current_task = &init_task;
 struct scheduler_ops *scheduler = &RR_scheduler;
@@ -52,4 +53,25 @@ void schedule_register (struct task_struct *task)
 void schedule_unregister (struct task_struct *task)
 {
     scheduler->schedule_unregister (task);
+}
+
+void schedule_info (void)
+{
+	struct task_struct *first, *it;
+	char *status;
+
+	/* header */
+	printk ("PID   STATUS    NAME");
+
+    first = scheduler->get_first ();
+	it = first;
+	while (1)
+	{
+		status = it->state == READY ? "READY" :
+				 it->state == RUNNING ? "RUNNING" : "INVALID";
+		printk ("%d     %s    %s", it->pid, status, it->name);
+		it = scheduler->get_next (it);
+		if (it == first)
+			break;
+	}
 }

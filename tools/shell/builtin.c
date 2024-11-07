@@ -1,10 +1,22 @@
 #include "arch/VGA.h"
 #include "mm/zone.h"
 #include "mm/allocator.h"
+#include "kernel/schedule.h"
 #include "lamune/printk.h"
 #include "lamune/string.h"
 
 void hexapawn (void);
+
+void builtin_ps (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: ps: too many arguments\n");
+		return ;
+	}
+	
+	schedule_info ();
+}
 
 void builtin_mm (int argc, char *argv[])
 {

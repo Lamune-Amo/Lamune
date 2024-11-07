@@ -8,6 +8,7 @@ struct scheduler_ops
 	void (*schedule_init) (void);
 	void (*schedule_register) (struct task_struct *task);
 	void (*schedule_unregister) (struct task_struct *task);
+	struct task_struct * (*get_first) (void);
 	struct task_struct * (*get_next) (struct task_struct *task);
 };
 
@@ -15,6 +16,7 @@ void schedule_init (void);
 void schedule (struct task_struct *p);
 void schedule_register (struct task_struct *task);
 void schedule_unregister (struct task_struct *task);
+void schedule_info (void);
 
 /* schedulers */
 extern struct scheduler_ops RR_scheduler;

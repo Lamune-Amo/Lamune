@@ -31,7 +31,9 @@ struct task_struct init_task = {
     .pid = 1,
     .regs = { 0, },
     .pc = 0,
+	.name = "init",
     .remains = 10,
+	.stack = kernel_stack,
     .fs = &init_files,
-    .sig_handler = &init_signals
+    .sig = &init_signals
 };

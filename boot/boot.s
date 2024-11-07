@@ -1,5 +1,5 @@
 .global start
-
+.extern kernel_stack
 .section .inittext
 ; entry for kernel
 start:
@@ -21,4 +21,3 @@ start:
 	jmp lr
 
 .ltorg
-.comm	kernel_stack,8192,4
