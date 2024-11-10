@@ -3,7 +3,7 @@
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 7
+#define BUILTIN_SIZE 8
 
 struct shell_args
 {
@@ -20,7 +20,8 @@ struct shell_args shell_builtin[BUILTIN_SIZE] = {
 	{ builtin_malloc, "malloc", "malloc test" },
 	{ builtin_free, "free", "free test" },
 	{ builtin_clear, "clear", "clear the screen" },
-	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" }
+	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" },
+	{ builtin_sp, "sp", "test stack" }
 };
 
 void builtin_help (int argc, char *argv[])
@@ -39,6 +40,7 @@ void builtin_help (int argc, char *argv[])
 	printk ("%s", str);
 	for (i = 1; i < BUILTIN_SIZE; i++)
 		printk ("%s: %s\n", shell_builtin[i].name, shell_builtin[i].help);
+	printk ("\n");
 }
 
 void shell_exec (int argc, char *argv[])

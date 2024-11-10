@@ -11,5 +11,6 @@ void builtin_malloc (int argc, char *argv[]);
 void builtin_free (int argc, char *argv[]);
 void builtin_clear (int argc, char *argv[]);
 void builtin_hexapawn (int argc, char *argv[]);
+void builtin_sp (int argc, char *argv[]);
 
 #endif

@@ -9,6 +9,7 @@
 static unsigned short *vga_video;
 static unsigned char vga_color;
 static size_t vga_x, vga_y;
+static bool vga_cursor_on;
 
 ssize_t vga_open (void)
 {
@@ -129,15 +130,29 @@ void vga_clear (void)
 	vga_y = 0;
 }
 
-void vga_cursor (int on)
+void vga_set_cursor (bool on)
 {
-	if (on)
+	vga_cursor_on = on;
+}
+
+void vga_cursor_handler (void)
+{
+	int old_cursor;
+	volatile int i;
+
+	while (1)
 	{
-		vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
-	}
-	else
-	{
-		vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = ((BLACK & 0xF) << 12 | (BLACK & 0xF) << 8) | (' ' & 0xFF);
+		if (!vga_cursor_on)
+			continue;
+
+		old_cursor = vga_x + vga_y * VIDEO_TEXT_WIDTH;
+		vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
+
+		/* delay */
+		for (i = 0; i < 999999; i++);
+
+		if (old_cursor > vga_x + vga_y * VIDEO_TEXT_WIDTH)
+			vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
 	}
 }
 

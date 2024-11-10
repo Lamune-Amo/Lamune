@@ -5,7 +5,7 @@
 start:
 	; stack
 	mov sp, kernel_stack
-	add sp, sp, $8192
+	add sp, sp, $4096
 	mov fp, sp
 
 	sub sp, sp, $4

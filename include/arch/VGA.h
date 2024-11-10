@@ -27,7 +27,7 @@ ssize_t vga_close (void);
 
 /* extension */
 void vga_clear (void);
-void vga_cursor (int on);
+void vga_set_cursor (bool on);
 void vga_set_color (char foreground, char background);
 
 #endif

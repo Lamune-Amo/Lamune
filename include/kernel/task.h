@@ -34,12 +34,15 @@ struct task_struct
 
 	/* handler */
     struct files_struct *fs;
-    struct signal_struct *sig;	
+    struct signal_struct *sig;
 };
 
 extern struct task_struct init_task;
 extern struct task_struct *current_task;
 extern char kernel_stack[];
+
+extern void task_init (void);
+extern int _fork_copy (uint32_t *regs, uint32_t old_stack, uint32_t new_stack);
 
 #define CURRENT_TASK (current_task)
 

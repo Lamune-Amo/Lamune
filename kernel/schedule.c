@@ -61,7 +61,7 @@ void schedule_info (void)
 	char *status;
 
 	/* header */
-	printk ("PID   STATUS    NAME");
+	printk ("PID   STATUS    NAME     PC\n");
 
     first = scheduler->get_first ();
 	it = first;
@@ -69,9 +69,10 @@ void schedule_info (void)
 	{
 		status = it->state == READY ? "READY" :
 				 it->state == RUNNING ? "RUNNING" : "INVALID";
-		printk ("%d     %s    %s", it->pid, status, it->name);
+		printk ("%d     %s    %s     %x\n", it->pid, status, it->name, it->pc);
 		it = scheduler->get_next (it);
 		if (it == first)
 			break;
 	}
+	printk ("\n");
 }

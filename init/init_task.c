@@ -23,7 +23,9 @@ static struct files_struct init_files = {
 };
 
 static struct signal_struct init_signals = {
-    .sighandler = NULL
+    .handler = {
+		[SIGNAL_INTTERUPT] = NULL
+	}
 };
 
 struct task_struct init_task = {

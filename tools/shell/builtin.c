@@ -78,3 +78,22 @@ void builtin_hexapawn (int argc, char *argv[])
 	hexapawn ();
 }
 
+void builtin_sp (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: sp: too many arguments\n");
+		return ;
+	}
+	
+	int sp;
+
+	asm volatile (
+		"mov\t\t%0, sp\n\t"
+		: "=r"(sp)
+		:
+		: "memory"
+	);
+
+	printk ("sp: %x\nstack head: %x\n", sp, kernel_stack);
+}

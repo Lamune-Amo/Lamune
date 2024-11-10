@@ -26,10 +26,18 @@ void RR_register (struct task_struct* task)
 			return ;
 	}
 
+	/* lock */
+	asm volatile (
+		"lock\n\t"
+	);
     if (rr_index < TASK_NUM_MAX)
         rr_tasks[rr_index++] = task;
     else
         assert (false);
+	/* unlock */
+	asm volatile (
+		"lock\n\t"
+	);
 }
 
 void RR_unregister (struct task_struct* task)
@@ -42,11 +50,19 @@ void RR_unregister (struct task_struct* task)
             break;
     }
 
+	/* lock */
+	asm volatile (
+		"lock\n\t"
+	);
     for (; i < rr_index && i < TASK_NUM_MAX - 1; i++)
     {
         rr_tasks[i] = rr_tasks[i + 1];
     }
     rr_index--;
+	/* unlock */
+	asm volatile (
+		"lock\n\t"
+	);
 }
 
 struct task_struct* RR_get_first (void)

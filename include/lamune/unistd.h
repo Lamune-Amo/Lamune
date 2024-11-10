@@ -10,4 +10,9 @@ int close (int fd);
 
 unsigned int sleep (unsigned int seconds);
 
+pid_t fork (void);
+pid_t forkf (const char *name, uint32_t pc);
+
+void exef (const char *name, uint32_t pc);
+
 #endif

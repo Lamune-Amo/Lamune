@@ -98,6 +98,8 @@ static struct ascii_field printable[] = {
 	[KEY_KP0] = {0, 0, '0'},
 
 	[KEY_KPDOT] = {0, 0, '.'},
+
+	[KEY_DEFINE_LAST] = {0, 0, 0}
 };
 
 char *stdin_buffer;
@@ -196,6 +198,7 @@ ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 	/* store user buffer pointer in buf */
 	while (!atomic_cas_addr ((void **) &stdin_buffer, NULL, buf));
 	stdin_index = 0;
+	vga_set_cursor (true);
 
 	while (1)
 	{
@@ -207,6 +210,7 @@ ssize_t stdin_read (struct file *fp, char *buf, size_t size)
 	}
 
 end:
+	vga_set_cursor (false);
 	/* restore */
 	while (!atomic_cas_addr ((void **) &stdin_buffer, buf, NULL));
 

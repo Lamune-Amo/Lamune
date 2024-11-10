@@ -3,11 +3,9 @@
 #include "kernel/schedule.h"
 #include "lamune/string.h"
 
-int fork (void)
+pid_t fork (void)
 {
 	struct task_struct *_task;
-	_task = kmalloc (sizeof (struct task_struct));
-	/*
 	struct files_struct *_fs;
 	struct signal_struct *_sig;
 	char *_stack;
@@ -24,37 +22,33 @@ int fork (void)
 	_sig = kmalloc (sizeof (struct signal_struct));
 	if (!_sig)
 		goto fail;
-		*/
-	
-	/* copy */
-	//memcpy (_task, CURRENT_TASK, sizeof (struct task_struct));
-	//memcpy (_stack, CURRENT_TASK->stack, TASK_STACK_SIZE);
-	//memcpy (_fs, CURRENT_TASK->fs, sizeof (struct files_struct));
-	//memcpy (_sig, CURRENT_TASK->sig, sizeof (struct signal_struct));
 
-	//_new_sp = _stack + (current->sp - CURRENT_TASK->stack)
+	/* copy */
+	memcpy (_task, CURRENT_TASK, sizeof (struct task_struct));
+	memcpy (_stack, CURRENT_TASK->stack, TASK_STACK_SIZE);
+	memcpy (_fs, CURRENT_TASK->fs, sizeof (struct files_struct));
+	memcpy (_sig, CURRENT_TASK->sig, sizeof (struct signal_struct));
 
 	/* task */
-	/*
 	_task->state = READY;
 	_task->pid = task_get_next_pid ();
 	_task->remains = 1;
 	_task->stack = _stack;
 	_task->fs = _fs;
 	_task->sig = _sig;
-	*/
 
-	
+	if (_fork_copy (_task->regs, (uint32_t) CURRENT_TASK->stack, (uint32_t) _stack))
+	{
+		/* child */
+		return 0;
+	}
 
+	/* parent */
 	/* register */
 	schedule_register (_task);
 
 	return _task->pid;
 
-child:
-	return 0;
-
-	/*
 fail:
 	if (_task)
 		kfree (_task);
@@ -63,5 +57,62 @@ fail:
 	if (_fs)
 		kfree (_fs);
 	return -1;
-	*/
+}
+
+pid_t forkf (const char *name, uint32_t pc)
+{
+	struct task_struct *_task;
+	struct files_struct *_fs;
+	struct signal_struct *_sig;
+	char *_stack;
+
+	_task = kmalloc (sizeof (struct task_struct));
+	if (!_task)
+		goto fail;
+	_stack = kmalloc (TASK_STACK_SIZE);
+	if (!_stack)
+		goto fail;
+	_fs = kmalloc (sizeof (struct files_struct));
+	if (!_fs)
+		goto fail;
+	_sig = kmalloc (sizeof (struct signal_struct));
+	if (!_sig)
+		goto fail;
+
+	/* copy */
+	memcpy (_task, CURRENT_TASK, sizeof (struct task_struct));
+	memcpy (_stack, CURRENT_TASK->stack, TASK_STACK_SIZE);
+	memcpy (_fs, CURRENT_TASK->fs, sizeof (struct files_struct));
+	memcpy (_sig, CURRENT_TASK->sig, sizeof (struct signal_struct));
+
+	/* task */
+	_task->state = READY;
+	_task->pid = task_get_next_pid ();
+	strcpy (_task->name, name);
+	_task->remains = 1;
+	_task->stack = _stack;
+	_task->fs = _fs;
+	_task->sig = _sig;
+
+	if (_fork_copy (_task->regs, (uint32_t) CURRENT_TASK->stack, (uint32_t) _stack))
+	{
+		/* child */
+		return 0;
+	}
+	_task->pc = pc;
+
+	/* parent */
+	/* register */
+	schedule_register (_task);
+
+	return _task->pid;
+
+fail:
+	if (_task)
+		kfree (_task);
+	if (_stack)
+		kfree (_stack);
+	if (_fs)
+		kfree (_fs);
+	return -1;
 }
