@@ -2,10 +2,12 @@
 #include "mm/zone.h"
 #include "mm/allocator.h"
 #include "kernel/schedule.h"
+#include "lamune/tools.h"
+#include "lamune/types.h"
+#include "lamune/unistd.h"
 #include "lamune/printk.h"
 #include "lamune/string.h"
-
-void hexapawn (void);
+#include "lamune/assert.h"
 
 void builtin_ps (int argc, char *argv[])
 {
@@ -27,6 +29,43 @@ void builtin_mm (int argc, char *argv[])
 	}
 	
 	mm_zone_info ();
+}
+
+void builtin_time (int argc, char *argv[])
+{
+	pid_t pid;
+
+	if (argc > 1)
+	{
+		printk ("sh: time: too many arguments\n");
+		return ;
+	}
+	
+	pid = forkf ("time", (uint32_t) screen_time);
+	if (pid < 0)
+		assert (false);
+}	
+
+void builtin_clear (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: clear: too many arguments\n");
+		return ;
+	}
+	
+	vga_clear ();
+}
+
+void builtin_hexapawn (int argc, char *argv[])
+{
+	if (argc > 1)
+	{
+		printk ("sh: hexapawn: too many arguments\n");
+		return ;
+	}
+	
+	hexapawn ();
 }
 
 void builtin_malloc (int argc, char *argv[])
@@ -54,28 +93,6 @@ void builtin_free (int argc, char *argv[])
 
 	printk ("free request: %d\n", atoi (argv[1]));
 	kfree ((void *) atoi (argv[1]));
-}
-
-void builtin_clear (int argc, char *argv[])
-{
-	if (argc > 1)
-	{
-		printk ("sh: clear: too many arguments\n");
-		return ;
-	}
-	
-	vga_clear ();
-}
-
-void builtin_hexapawn (int argc, char *argv[])
-{
-	if (argc > 1)
-	{
-		printk ("sh: hexapawn: too many arguments\n");
-		return ;
-	}
-	
-	hexapawn ();
 }
 
 void builtin_sp (int argc, char *argv[])

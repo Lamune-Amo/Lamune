@@ -18,7 +18,7 @@ KERNEL		= kernel/schedule.c kernel/RR.c kernel/task.c kernel/signal.c kernel/for
 LIBSOFT		= udivmodsi4.c udivmod.c divmod.c mulsi3.c
 LIB			= lib/string.c lib/unistd.c lib/printk.c lib/list.c lib/assert.c
 MM			= mm/page.c mm/zone.c mm/allocator.c mm/compact.c
-TOOLS		= tools/shell/shell.c tools/shell/builtin.c tools/hexapawn.c
+TOOLS		= tools/shell/shell.c tools/shell/builtin.c tools/hexapawn.c tools/time.c
 
 SRCS		= $(ARCH) $(BOOT) $(DRIVERS) $(FS) $(INIT) $(KERNEL) $(LIB) $(MM) $(TOOLS) $(addprefix lib/soft/, $(LIBSOFT))
 INCS		= -Iinclude

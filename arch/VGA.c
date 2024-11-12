@@ -143,16 +143,19 @@ void vga_cursor_handler (void)
 	while (1)
 	{
 		if (!vga_cursor_on)
+		{
+			vga_video[old_cursor] = 0;
 			continue;
+		}
 
 		old_cursor = vga_x + vga_y * VIDEO_TEXT_WIDTH;
 		vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
 
 		/* delay */
-		for (i = 0; i < 999999; i++);
+		for (i = 0; i < 1000000; i++);
 
-		if (old_cursor > vga_x + vga_y * VIDEO_TEXT_WIDTH)
-			vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
+		if (old_cursor >= vga_x + vga_y * VIDEO_TEXT_WIDTH)
+			vga_video[old_cursor] = 0;
 	}
 }
 
