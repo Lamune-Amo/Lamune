@@ -3,6 +3,7 @@
 
 #include "fs/vfs.h"
 #include "kernel/signal.h"
+#include "kernel/marker.h"
 #include "lamune/types.h"
 
 #define TASK_STACK_SIZE 4096
@@ -35,6 +36,10 @@ struct task_struct
 	/* handler */
     struct files_struct *fs;
     struct signal_struct *sig;
+
+	/* marker */
+	struct marker_struct marker;
+	struct marker_struct *marked;
 };
 
 extern struct task_struct init_task;
@@ -43,6 +48,8 @@ extern char kernel_stack[];
 
 extern void task_init (void);
 extern int _fork_copy (uint32_t *regs, uint32_t old_stack, uint32_t new_stack);
+
+extern void task_destructor (void);
 
 #define CURRENT_TASK (current_task)
 

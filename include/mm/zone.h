@@ -73,6 +73,7 @@ struct zone
 /* extern */
 void mm_zone_init (void);
 struct zone *mm_zone_get (enum zone_selector sel);
+enum zone_selector mm_zone_section (void *addr);
 
 void mm_zone_add_page (struct zone *_zone, struct page *page);
 

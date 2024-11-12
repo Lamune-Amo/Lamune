@@ -3,7 +3,7 @@
 #include "kernel/schedule.h"
 #include "lamune/string.h"
 
-pid_t fork (void)
+pid_t fork (void) // this should be fixed!
 {
 	struct task_struct *_task;
 	struct files_struct *_fs;
@@ -45,7 +45,7 @@ pid_t fork (void)
 
 	/* parent */
 	/* register */
-	schedule_register (_task);
+	schedule_register (_task, true);
 
 	return _task->pid;
 
@@ -80,8 +80,8 @@ pid_t forkf (const char *name, uint32_t pc)
 		goto fail;
 
 	/* copy */
-	memcpy (_task, CURRENT_TASK, sizeof (struct task_struct));
-	memcpy (_stack, CURRENT_TASK->stack, TASK_STACK_SIZE);
+	memset (_task, 0, sizeof (struct task_struct));
+	memset (_stack, 0, TASK_STACK_SIZE);
 	memcpy (_fs, CURRENT_TASK->fs, sizeof (struct files_struct));
 	memcpy (_sig, CURRENT_TASK->sig, sizeof (struct signal_struct));
 
@@ -94,16 +94,15 @@ pid_t forkf (const char *name, uint32_t pc)
 	_task->fs = _fs;
 	_task->sig = _sig;
 
-	if (_fork_copy (_task->regs, (uint32_t) CURRENT_TASK->stack, (uint32_t) _stack))
-	{
-		/* child */
-		return 0;
-	}
+	_task->regs[28] = (uint32_t) _stack + TASK_STACK_SIZE;
+	_task->regs[29] = (uint32_t) task_destructor;
 	_task->pc = pc;
+	
+	CURRENT_TASK->marker.next = NULL;
+	_task->marked = &CURRENT_TASK->marker;
 
-	/* parent */
 	/* register */
-	schedule_register (_task);
+	schedule_register (_task, true);
 
 	return _task->pid;
 

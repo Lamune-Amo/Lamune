@@ -4,7 +4,7 @@
 #include "lamune/types.h"
 #include "lamune/stdarg.h"
 
-#define PRINTK_BUFFER_SIZE 256
+#define PRINTK_BUFFER_SIZE 512
 
 #define PRINTK_FLAG_WIDTH 0x01
 

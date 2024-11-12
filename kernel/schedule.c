@@ -45,14 +45,42 @@ void schedule_init (void)
 	scheduler->schedule_init ();
 }
 
-void schedule_register (struct task_struct *task)
+void schedule_register (struct task_struct *task, bool atomic)
 {
+	if (atomic)
+	{
+		/* lock */
+		asm volatile (
+			"lock\n\t"
+		);
+	}
     scheduler->schedule_register (task);
+	if (atomic)
+	{
+		/* unlock */
+		asm volatile (
+			"lock\n\t"
+		);
+	}
 }
 
-void schedule_unregister (struct task_struct *task)
+void schedule_unregister (struct task_struct *task, bool atomic)
 {
+	if (atomic)
+	{
+		/* lock */
+		asm volatile (
+			"lock\n\t"
+		);
+	}
     scheduler->schedule_unregister (task);
+	if (atomic)
+	{
+		/* unlock */
+		asm volatile (
+			"lock\n\t"
+		);
+	}
 }
 
 void schedule_info (void)
@@ -61,7 +89,7 @@ void schedule_info (void)
 	char *status;
 
 	/* header */
-	printk ("PID   STATUS    NAME     PC\n");
+	printk ("PID   STATUS    NAME      PC\n");
 
     first = scheduler->get_first ();
 	it = first;
@@ -69,7 +97,7 @@ void schedule_info (void)
 	{
 		status = it->state == READY ? "READY" :
 				 it->state == RUNNING ? "RUNNING" : "INVALID";
-		printk ("%d     %s    %s     %x\n", it->pid, status, it->name, it->pc);
+		printk ("%5d %9s %9s %x\n", it->pid, status, it->name, it->pc);
 		it = scheduler->get_next (it);
 		if (it == first)
 			break;

@@ -98,12 +98,19 @@ static void printk_argument_x (struct printk_info *info, unsigned int arg, uint8
 
 static void printk_argument_c (struct printk_info *info, char arg)
 {
-	printk_buffer_write (info, &arg, 1);
+	printk_buffer_write (info, &arg, 1);	
 }
 
 static void printk_argument_s (struct printk_info *info, char *arg)
 {
+	int i;
+
 	printk_buffer_write (info, arg, strlen (arg));
+	if (info->flags & PRINTK_FLAG_WIDTH)
+	{
+		for (i = strlen (arg); i < info->flag.width; i++)
+			printk_buffer_write (info, " ", 1);
+	}
 }
 
 static void printk_argument_d (struct printk_info *info, int arg)
@@ -130,6 +137,12 @@ static void printk_argument_d (struct printk_info *info, int arg)
 
 	for (i = 0; i < length; i++)
 		printk_buffer_write (info, &buffer[length - i - 1], 1);
+
+	if (info->flags & PRINTK_FLAG_WIDTH)
+	{
+		for (; i < info->flag.width; i++)
+			printk_buffer_write (info, " ", 1);
+	}
 }
 
 static void printk_write_argument (struct printk_info *info, va_list *args)

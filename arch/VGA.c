@@ -82,6 +82,7 @@ ssize_t vga_write (const char *buf, size_t size)
 				break;
 			
 			case '\n':
+				vga_video[vga_x + vga_y * VIDEO_TEXT_WIDTH] = (vga_color << 8) | (' ' & 0xFF);
 				vga_x = 0;
 				vga_y++;
 				if (vga_y == VIDEO_TEXT_HEIGHT)
@@ -140,22 +141,30 @@ void vga_cursor_handler (void)
 	int old_cursor;
 	volatile int i;
 
+	old_cursor = 0;
 	while (1)
 	{
 		if (!vga_cursor_on)
-		{
-			vga_video[old_cursor] = 0;
 			continue;
-		}
 
 		old_cursor = vga_x + vga_y * VIDEO_TEXT_WIDTH;
 		vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
+		for (i = 0; i < 150000; i++)
+		{
+			if (old_cursor != vga_x + vga_y * VIDEO_TEXT_WIDTH)
+			{
+				if (old_cursor > vga_x + vga_y * VIDEO_TEXT_WIDTH)
+					vga_video[old_cursor] = 0;
 
-		/* delay */
-		for (i = 0; i < 1000000; i++);
+				old_cursor = vga_x + vga_y * VIDEO_TEXT_WIDTH;
+				vga_video[old_cursor] = ((WHITE & 0xF) << 12 | (WHITE & 0xF) << 8) | (' ' & 0xFF);
+			}
+		}
 
 		if (old_cursor >= vga_x + vga_y * VIDEO_TEXT_WIDTH)
 			vga_video[old_cursor] = 0;
+
+		for (i = 0; i < 500000; i++);
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "mm/zone.h"
 #include "mm/allocator.h"
 #include "kernel/schedule.h"
+#include "kernel/wait.h"
 #include "lamune/tools.h"
 #include "lamune/types.h"
 #include "lamune/unistd.h"
@@ -11,24 +12,34 @@
 
 void builtin_ps (int argc, char *argv[])
 {
+	pid_t pid;
+
 	if (argc > 1)
 	{
 		printk ("sh: ps: too many arguments\n");
 		return ;
 	}
 	
-	schedule_info ();
+	pid = forkf ("ps", (uint32_t) schedule_info);
+	if (pid < 0)
+		assert (false);
+	waitpid (pid);
 }
 
 void builtin_mm (int argc, char *argv[])
 {
+	pid_t pid;
+
 	if (argc > 1)
 	{
 		printk ("sh: mm: too many arguments\n");
 		return ;
 	}
 	
-	mm_zone_info ();
+	pid = forkf ("mm", (uint32_t) mm_zone_info);
+	if (pid < 0)
+		assert (false);
+	waitpid (pid);
 }
 
 void builtin_time (int argc, char *argv[])
@@ -59,13 +70,18 @@ void builtin_clear (int argc, char *argv[])
 
 void builtin_hexapawn (int argc, char *argv[])
 {
+	pid_t pid;
+
 	if (argc > 1)
 	{
 		printk ("sh: hexapawn: too many arguments\n");
 		return ;
 	}
 	
-	hexapawn ();
+	pid = forkf ("hexapawn", (uint32_t) hexapawn);
+	if (pid < 0)
+		assert (false);
+	waitpid (pid);
 }
 
 void builtin_malloc (int argc, char *argv[])

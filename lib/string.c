@@ -18,6 +18,7 @@ char *strcpy (char *dest, const char *origin)
 
 	for (i = 0; i < strlen (origin); i++)
 		dest[i] = origin[i];
+	dest[i] = 0;
 	return dest;
 }
 

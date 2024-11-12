@@ -37,5 +37,11 @@ struct task_struct init_task = {
     .remains = 10,
 	.stack = kernel_stack,
     .fs = &init_files,
-    .sig = &init_signals
+    .sig = &init_signals,
+	.marker = {
+		.status = MARKER_NONE,
+		.value = NULL,
+		.next = NULL
+	},
+	.marked = NULL
 };

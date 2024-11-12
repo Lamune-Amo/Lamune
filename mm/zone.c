@@ -12,6 +12,19 @@ struct zone *mm_zone_get (enum zone_selector sel)
 	return &zone[sel];
 }
 
+enum zone_selector mm_zone_section (void *addr)
+{
+	int i;
+
+	for (i = 0; i < ZONE_COUNT; i++)
+	{
+		if (zone[i].start <= (unsigned long) addr && (unsigned long) addr <= zone[i].end)
+			return i;
+	}
+	
+	return -1;
+}
+
 static struct page *mm_zone_find_pair (struct zone *_zone, struct page *p, int order)
 {
 	struct page *it;
@@ -185,14 +198,14 @@ void mm_zone_info (void)
 	_zone = zone;
 
 	printk ("Memory\n");
-	printk ("Zone       Allocated   Used    Address\n");
-	printk ("ARCH       %dKB         %dKB	 %x-%x\n",
+	printk ("Zone       Allocated   Used        Address\n");
+	printk ("ARCH       %4dKB      %4dKB      %x-%x\n",
 			_zone[ZONE_ARCH].allocated / 1024, _zone[ZONE_ARCH].used / 1024,
 			_zone[ZONE_ARCH].start, _zone[ZONE_ARCH].end);
-	printk ("KERNEL     %dKB        %dKB    %x-%x\n",
+	printk ("KERNEL     %4dKB      %4dKB      %x-%x\n",
 			_zone[ZONE_KERNEL].allocated / 1024, _zone[ZONE_KERNEL].used / 1024,
 			_zone[ZONE_KERNEL].start, _zone[ZONE_KERNEL].end);
-	printk ("NORMAL     %dKB      %dKB     %x-%x\n",
+	printk ("NORMAL     %4dKB      %4dKB      %x-%x\n",
 			_zone[ZONE_NORMAL].allocated / 1024, _zone[ZONE_NORMAL].used / 1024,
 			_zone[ZONE_NORMAL].start, _zone[ZONE_NORMAL].end);
 
@@ -203,7 +216,7 @@ void mm_zone_info (void)
 		alloc += _zone[i].allocated / 1024;
 		used += _zone[i].used / 1024;
 	}
-	printk ("ALL        %dKB      %dKB    %x-%x\n\n", alloc, used,
+	printk ("ALL        %4dKB      %4dKB      %x-%x\n\n", alloc, used,
 			_zone[ZONE_ARCH].start, _zone[ZONE_NORMAL].end);
 }
 
