@@ -22,7 +22,8 @@ void schedule (struct task_struct *task)
 
     next = scheduler->get_next (task);
     next->remains = 1;
-    next->state = RUNNING;
+	if (next->state != DIED)
+		next->state = RUNNING;
     asm volatile (
 		"mov\t\tr26, %0\n\t"
 		: 

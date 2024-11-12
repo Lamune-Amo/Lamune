@@ -3,7 +3,7 @@
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 9
+#define BUILTIN_SIZE 10
 
 struct shell_args
 {
@@ -18,6 +18,7 @@ struct shell_args shell_builtin[BUILTIN_SIZE] = {
 	{ builtin_ps, "ps", "process monitor" },
 	{ builtin_mm, "mm", "memory monitor" },
 	{ builtin_time, "time", "display the time" },
+	{ builtin_kill, "kill", "kill the process" },
 	{ builtin_clear, "clear", "clear the screen" },
 	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" },
 	{ builtin_malloc, "malloc", "malloc test" },

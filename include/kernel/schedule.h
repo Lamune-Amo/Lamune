@@ -19,6 +19,7 @@ void schedule_unregister (struct task_struct *task, bool atomic);
 void schedule_info (void);
 
 /* schedulers */
+extern struct scheduler_ops *scheduler;
 extern struct scheduler_ops RR_scheduler;
 
 #endif

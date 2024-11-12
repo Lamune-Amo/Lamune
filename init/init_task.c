@@ -41,6 +41,7 @@ struct task_struct init_task = {
 	.marker = {
 		.status = MARKER_NONE,
 		.value = NULL,
+		.task = NULL,
 		.next = NULL
 	},
 	.marked = NULL

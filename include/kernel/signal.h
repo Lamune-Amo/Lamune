@@ -12,4 +12,6 @@ struct signal_struct
 
 void signal_init (void);
 
+int kill (pid_t pid, int sig);
+
 #endif

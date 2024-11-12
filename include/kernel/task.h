@@ -12,7 +12,8 @@
 enum task_state
 {
 	READY = 0,
-	RUNNING
+	RUNNING,
+	DIED
 };
 
 struct task_struct
@@ -48,6 +49,8 @@ extern char kernel_stack[];
 
 extern void task_init (void);
 extern int _fork_copy (uint32_t *regs, uint32_t old_stack, uint32_t new_stack);
+
+extern struct task_struct *task_find_by_pid (pid_t pid);
 
 extern void task_destructor (void);
 

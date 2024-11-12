@@ -2,6 +2,7 @@
 #include "mm/allocator.h"
 #include "kernel/task.h"
 #include "kernel/schedule.h"
+#include "lamune/printk.h"
 
 char kernel_stack[TASK_STACK_SIZE];
 
@@ -18,6 +19,24 @@ void task_init (void)
 	task_pid = 2;
 }
 
+struct task_struct *task_find_by_pid (pid_t pid)
+{
+	struct task_struct *first, *it;
+
+    first = scheduler->get_first ();
+	it = first;
+	while (1)
+	{
+		if (it->pid == pid)
+			return it;
+		it = scheduler->get_next (it);
+		if (it == first)
+			break;
+	}
+
+	return NULL;
+}
+
 void task_destructor (void)
 {
 	struct marker_struct *marked;
@@ -29,6 +48,11 @@ void task_destructor (void)
 		marked->value = NULL;
 		marked = marked->next;
 	}
+
+	if (CURRENT_TASK->state == DIED)
+		printk ("Terminated\n");
+
+	CURRENT_TASK->state = DIED;
 
 	/* lock */
 	asm volatile (

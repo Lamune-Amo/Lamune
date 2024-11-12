@@ -98,6 +98,7 @@ pid_t forkf (const char *name, uint32_t pc)
 	_task->regs[29] = (uint32_t) task_destructor;
 	_task->pc = pc;
 	
+	CURRENT_TASK->marker.task = _task;
 	CURRENT_TASK->marker.next = NULL;
 	_task->marked = &CURRENT_TASK->marker;
 
