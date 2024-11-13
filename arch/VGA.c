@@ -17,6 +17,7 @@ ssize_t vga_open (void)
 	vga_color = (WHITE & 0xF) << 4 | (BLACK & 0xF);
 	vga_x = 0;
 	vga_y = 0;
+	vga_cursor_on = false;
 
 	return 1;
 }

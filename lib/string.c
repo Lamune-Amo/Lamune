@@ -126,11 +126,9 @@ int atoi (const char *str)
 	else if (!strcmp (str, "0"))
 	{
 	}
-	/* decimal */
-	else
-		return atoi_dec (str);
 
-	return 0;
+	/* decimal */
+	return atoi_dec (str);
 }
 
 void *memset (void *ptr, int value, size_t num)

@@ -46,12 +46,14 @@ void signal_hook (uint8_t code)
 		return ;
 
 	sig = handleable[code];
-	if (sig >= SIGNAL_LAST || !sig || !FOREGROUND_TASK)
+	if (sig >= SIGNAL_LAST || !sig)/* || !FOREGROUND_TASK) */
 		return ;
 
+	/*
 	if (FOREGROUND_TASK->sig->handler[sig])
 		FOREGROUND_TASK->sig->handler[sig] ();
 	else
+	*/
 		default_handler[sig] ();
 }
 

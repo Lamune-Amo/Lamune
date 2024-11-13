@@ -2,7 +2,7 @@
 #include "kernel/schedule.h"
 #include "lamune/assert.h"
 
-#define TASK_NUM_MAX 5
+#define TASK_NUM_MAX 10
 
 struct task_struct *rr_tasks[TASK_NUM_MAX] = {
     &init_task, 0,

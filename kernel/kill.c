@@ -5,6 +5,9 @@ int kill (pid_t pid, int sig)
 {
 	struct task_struct *task;
 
+	if (pid == 1)
+		return 0;
+
 	task = task_find_by_pid (pid);
 	if (!task)
 		return -1;

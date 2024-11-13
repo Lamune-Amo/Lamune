@@ -150,7 +150,7 @@ static void printk_write_argument (struct printk_info *info, va_list *args)
 	if (*info->format == 'x' || *info->format == 'X')
 		printk_argument_x (info, va_arg (*args, unsigned int), *info->format == 'X');
 	else if (*info->format == 'c')
-		printk_argument_c (info, va_arg (*args, char));
+		printk_argument_c (info, va_arg (*args, int));
 	else if (*info->format == 's')
 		printk_argument_s (info, va_arg (*args, char *));
 	else if (*info->format == 'd')

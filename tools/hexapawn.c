@@ -722,7 +722,7 @@ void handle_player (void)
     while (!((new.row >= 1 && new.row <= BOARD_ROW) &&
 			(new.column >= 1 && new.column <= BOARD_COLUMN) &&
 			coordinate_validation (&pawn, &new)));
-				
+
 	/* clear */
 	SET_POSITION (selected_pawn, -1, -1);
 	/* mark the movement */
@@ -741,7 +741,7 @@ void handle_player (void)
 /*
  * handle_AI () - handle the ai turn 
  */
-void handle_AI (void)
+void handle_AI (int type)
 {
 	int evaluation;
 
@@ -753,6 +753,14 @@ void handle_AI (void)
 		evaluation = hexapawn_beta (PLY_DEPTH, -10000, 10000);
 	else
 		evaluation = hexapawn_alpha (PLY_DEPTH, -10000, 10000);
+
+	if (type)
+	{
+		vga_clear ();
+		print_header (1);
+		print_state ();
+		printk ("\n");
+	}
 
 	printk ("(%s) $> move (%d, %d) -> (%d, %d)\n\n", player_pawn == PAWN_WHITE ? "black" : "white",
 			origin_position.row, origin_position.column, moved_position.row, moved_position.column);
@@ -775,6 +783,11 @@ void hexapawn (void)
     memset (state, 0, BOARD_ROW * BOARD_COLUMN);
 	for (i = 0; i < BOARD_ROW; i++)
 		strcpy (&state[i + 1][1], BOARD_DAFAULT[i]);
+	/* clear */
+	SET_POSITION (selected_pawn, -1, -1);
+	/* mark the movement */
+	SET_POSITION (origin_position, -1, -1);
+	SET_POSITION (moved_position, -1, -1);
 
 	vga_clear ();
 	print_header (0);
@@ -803,7 +816,7 @@ void hexapawn (void)
 		else
 		{
 			printk ("\n");
-			handle_AI ();
+			handle_AI (0);
 			turn = TURN_PLAYER;
 			printk ("\n\n");
 		}
@@ -832,6 +845,11 @@ void hexapawn_auto (void)
     memset (state, 0, BOARD_ROW * BOARD_COLUMN);
 	for (i = 0; i < BOARD_ROW; i++)
 		strcpy (&state[i + 1][1], BOARD_DAFAULT[i]);
+	/* clear */
+	SET_POSITION (selected_pawn, -1, -1);
+	/* mark the movement */
+	SET_POSITION (origin_position, -1, -1);
+	SET_POSITION (moved_position, -1, -1);
 
 	turn = TURN_AI;
 	vga_clear ();
@@ -840,13 +858,14 @@ void hexapawn_auto (void)
     while ((win = winner ()) == WIN_NONE)
     {
 		print_header (1);
+		print_state ();
 
 		/* player */
 		if (turn == TURN_PLAYER)
 		{
 			player_pawn = PAWN_WHITE;
 
-			handle_AI ();
+			handle_AI (1);
 			turn = TURN_AI;
 			printk ("\n\n");
 		}
@@ -855,11 +874,10 @@ void hexapawn_auto (void)
 		{
 			player_pawn = PAWN_BLACK;
 
-			handle_AI ();
+			handle_AI (1);
 			turn = TURN_PLAYER;
 			printk ("\n\n");
 		}
-		print_state ();
 
 		sleep (3);
 		vga_clear ();

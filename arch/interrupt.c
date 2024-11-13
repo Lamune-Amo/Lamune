@@ -3,7 +3,7 @@
 #include "arch/VGA.h"
 #include "arch/keyboard.h"
 
-char interrupt_stack[512];
+char interrupt_stack[1024];
 
 /* Trap */
 interrupt_table_t interrupt_trap[2] = {
