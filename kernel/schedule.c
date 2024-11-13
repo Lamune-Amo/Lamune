@@ -3,6 +3,7 @@
 #include "lamune/printk.h"
 
 struct task_struct *current_task = &init_task;
+struct task_struct *foreground_task = NULL;
 struct scheduler_ops *scheduler = &RR_scheduler;
 
 /* scheduling */

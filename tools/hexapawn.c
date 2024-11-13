@@ -822,3 +822,59 @@ void hexapawn (void)
 	print_state ();
 	printk ("\n");
 }
+
+void hexapawn_auto (void)
+{
+	int win;
+	int i;
+
+	/* initial state */
+    memset (state, 0, BOARD_ROW * BOARD_COLUMN);
+	for (i = 0; i < BOARD_ROW; i++)
+		strcpy (&state[i + 1][1], BOARD_DAFAULT[i]);
+
+	turn = TURN_AI;
+	vga_clear ();
+
+    /* in game */
+    while ((win = winner ()) == WIN_NONE)
+    {
+		print_header (1);
+
+		/* player */
+		if (turn == TURN_PLAYER)
+		{
+			player_pawn = PAWN_WHITE;
+
+			handle_AI ();
+			turn = TURN_AI;
+			printk ("\n\n");
+		}
+		/* AI */
+		else
+		{
+			player_pawn = PAWN_BLACK;
+
+			handle_AI ();
+			turn = TURN_PLAYER;
+			printk ("\n\n");
+		}
+		print_state ();
+
+		sleep (3);
+		vga_clear ();
+    }
+	
+	/* game is over */
+	print_header (0);
+	if (win == WIN_DRAW)
+		printk ("DRAW! ");
+	else
+		printk ("%s (%s) WIN!\n\n",
+				(win == WIN_WHITE ?
+				 (player_pawn == PAWN_WHITE ? "player" : "AI") :
+				 (player_pawn == PAWN_WHITE ? "AI" : "player")),
+				win == WIN_WHITE ? "white" : "black");
+	print_state ();
+	printk ("\n");
+}

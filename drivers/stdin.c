@@ -107,6 +107,7 @@ size_t stdin_index;
 bool stdin_leftshift;
 bool stdin_rightshift;
 bool stdin_capslock;
+bool stdin_ctrl;
 
 void stdin_hook (uint8_t code)
 {
@@ -136,11 +137,19 @@ void stdin_hook (uint8_t code)
             stdin_capslock = ~stdin_capslock;
             return ;
 
+        case KEY_LEFTCTRL:
+            stdin_ctrl = true;
+            return ;
+        
+        case KEY_LEFTCTRL + KEY_RELEASE_OFFSET:
+            stdin_ctrl = false;
+            return ;
+
         default:
 			break;
     }
 
-	if (code >= KEY_DEFINE_LAST)
+	if (code >= KEY_DEFINE_LAST || stdin_ctrl)
 		return ;
 
 	plain = &printable[code];

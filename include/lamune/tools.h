@@ -4,5 +4,6 @@
 /* tools */
 void screen_time (void);
 void hexapawn (void);
+void hexapawn_auto (void);
 
 #endif

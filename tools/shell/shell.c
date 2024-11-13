@@ -1,9 +1,10 @@
+#include "kernel/signal.h"
 #include "lamune/unistd.h"
 #include "lamune/sh.h"
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 10
+#define BUILTIN_SIZE 11
 
 struct shell_args
 {
@@ -21,6 +22,7 @@ struct shell_args shell_builtin[BUILTIN_SIZE] = {
 	{ builtin_kill, "kill", "kill the process" },
 	{ builtin_clear, "clear", "clear the screen" },
 	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" },
+	{ builtin_hexapawn_auto, "hexapawn_auto", "for display" },
 	{ builtin_malloc, "malloc", "malloc test" },
 	{ builtin_free, "free", "free test" },
 	{ builtin_sp, "sp", "test stack" }
@@ -83,7 +85,7 @@ void shell (void)
 	unsigned int size, i;
 	int argc;
 	char *test;
-
+	
 	while (1)
 	{
 		printk ("$ ");

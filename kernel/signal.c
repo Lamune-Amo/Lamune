@@ -46,13 +46,26 @@ void signal_hook (uint8_t code)
 		return ;
 
 	sig = handleable[code];
-	if (sig >= SIGNAL_LAST)
+	if (sig >= SIGNAL_LAST || !sig || !FOREGROUND_TASK)
 		return ;
 
-	if (CURRENT_TASK->sig->handler[sig])
-		CURRENT_TASK->sig->handler[sig] ();
+	if (FOREGROUND_TASK->sig->handler[sig])
+		FOREGROUND_TASK->sig->handler[sig] ();
 	else
 		default_handler[sig] ();
+}
+
+void (*signal (int signo, void (*func) (void))) (void)
+{
+	void (*prev) (void);
+
+	if (signo >= SIGNAL_LAST || !signo)
+		return NULL;
+
+	prev = CURRENT_TASK->sig->handler[signo];
+	CURRENT_TASK->sig->handler[signo] = func;
+
+	return prev;
 }
 
 void signal_init (void)

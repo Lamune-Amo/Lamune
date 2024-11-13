@@ -102,6 +102,22 @@ void builtin_hexapawn (int argc, char *argv[])
 	waitpid (pid);
 }
 
+void builtin_hexapawn_auto (int argc, char *argv[])
+{
+	pid_t pid;
+
+	if (argc > 1)
+	{
+		printk ("sh: hexapawn: too many arguments\n");
+		return ;
+	}
+	
+	pid = forkf ("hexapawn", (uint32_t) hexapawn_auto);
+	if (pid < 0)
+		assert (false);
+	waitpid (pid);
+}
+
 void builtin_malloc (int argc, char *argv[])
 {
 	char *m;

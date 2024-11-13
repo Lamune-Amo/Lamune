@@ -45,6 +45,7 @@ struct task_struct
 
 extern struct task_struct init_task;
 extern struct task_struct *current_task;
+extern struct task_struct *foreground_task;
 extern char kernel_stack[];
 
 extern void task_init (void);
@@ -55,6 +56,7 @@ extern struct task_struct *task_find_by_pid (pid_t pid);
 extern void task_destructor (void);
 
 #define CURRENT_TASK (current_task)
+#define FOREGROUND_TASK (foreground_task)
 
 pid_t task_get_next_pid (void);
 

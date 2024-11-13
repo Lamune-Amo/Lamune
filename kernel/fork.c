@@ -83,7 +83,7 @@ pid_t forkf (const char *name, uint32_t pc)
 	memset (_task, 0, sizeof (struct task_struct));
 	memset (_stack, 0, TASK_STACK_SIZE);
 	memcpy (_fs, CURRENT_TASK->fs, sizeof (struct files_struct));
-	memcpy (_sig, CURRENT_TASK->sig, sizeof (struct signal_struct));
+	memset (_sig, 0, sizeof (struct signal_struct));
 
 	/* task */
 	_task->state = READY;
