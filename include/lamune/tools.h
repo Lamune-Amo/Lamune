@@ -5,5 +5,6 @@
 void screen_time (void);
 void hexapawn (void);
 void hexapawn_auto (void);
+void colorful (void);
 
 #endif

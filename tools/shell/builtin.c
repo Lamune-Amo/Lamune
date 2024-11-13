@@ -56,7 +56,7 @@ void builtin_time (int argc, char *argv[])
 	pid = forkf ("time", (uint32_t) screen_time);
 	if (pid < 0)
 		assert (false);
-}	
+}
 
 void builtin_kill (int argc, char *argv[])
 {
@@ -84,6 +84,21 @@ void builtin_clear (int argc, char *argv[])
 	}
 	
 	vga_clear ();
+}
+
+void builtin_colorful (int argc, char *argv[])
+{
+	pid_t pid;
+
+	if (argc > 1)
+	{
+		printk ("sh: colorful: too many arguments\n");
+		return ;
+	}
+
+	pid = forkf ("cOLorfUl", (uint32_t) colorful);
+	if (pid < 0)
+		assert (false);
 }
 
 void builtin_hexapawn (int argc, char *argv[])

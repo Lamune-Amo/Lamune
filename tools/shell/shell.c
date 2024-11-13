@@ -4,7 +4,7 @@
 #include "lamune/string.h"
 #include "lamune/printk.h"
 
-#define BUILTIN_SIZE 11
+#define BUILTIN_SIZE 12
 
 struct shell_args
 {
@@ -13,7 +13,7 @@ struct shell_args
 	char help[32];
 };
 
-char *shell_token[16];
+char *shell_token[32];
 struct shell_args shell_builtin[BUILTIN_SIZE] = {
 	{ builtin_help, "help", "" },
 	{ builtin_ps, "ps", "process monitor" },
@@ -21,6 +21,7 @@ struct shell_args shell_builtin[BUILTIN_SIZE] = {
 	{ builtin_time, "time", "display the time" },
 	{ builtin_kill, "kill", "kill the process" },
 	{ builtin_clear, "clear", "clear the screen" },
+	{ builtin_colorful, "colorful", "COLORFUL" },
 	{ builtin_hexapawn, "hexapawn", "play the heaxpawn" },
 	{ builtin_hexapawn_auto, "hexapawn_auto", "for display" },
 	{ builtin_malloc, "malloc", "malloc test" },

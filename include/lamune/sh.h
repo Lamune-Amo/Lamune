@@ -11,6 +11,7 @@ void builtin_mm (int argc, char *argv[]);
 void builtin_time (int argc, char *argv[]);
 void builtin_kill (int argc, char *argv[]);
 void builtin_clear (int argc, char *argv[]);
+void builtin_colorful (int argc, char *argv[]);
 void builtin_hexapawn (int argc, char *argv[]);
 void builtin_hexapawn_auto (int argc, char *argv[]);
 void builtin_malloc (int argc, char *argv[]);
